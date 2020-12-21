@@ -45,7 +45,7 @@ Descargar, instalar y arrancar [Dockerbox](https://github.com/egibide/dockerbox)
 
 ### Configurar el nuevo sitio web como predeterminado
 
-1. Ir a la carpeta `dockerbox/nginx/conf.d` y editar el fichero `dockerbox.conf`:
+1. Ir a la carpeta `dockerbox/nginx` y editar el fichero `dockerbox.conf`:
 
     ```
     root /var/www/html/app/public;
