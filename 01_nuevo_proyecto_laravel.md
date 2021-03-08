@@ -63,7 +63,7 @@ Descargar, instalar y arrancar [Dockerbox](https://github.com/ijaureguialzo/dock
    app.dockerbox.test -> http://nginx:80
    ```
 
-   > Recuerda añadir una coma en la línea anterior a la nueva para que la sintaxis del fichero YAML siga siendo correcta.
+   > :warning: Recuerda añadir una coma en la línea anterior a la nueva para que la sintaxis del fichero YAML siga siendo correcta.
 
 4. Editar como root el fichero `/etc/hosts` (en macOS y Linux) o
    en [Windows](https://www.adslzone.net/esenciales/windows-10/editar-archivo-host/) y añadir una nueva línea:
