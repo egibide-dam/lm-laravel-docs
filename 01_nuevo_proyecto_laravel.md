@@ -2,7 +2,7 @@
 
 ## Prerrequisitos
 
-Descargar, instalar y arrancar [Dockerbox](https://github.com/egibide/dockerbox).
+Descargar, instalar y arrancar [Dockerbox](https://github.com/ijaureguialzo/dockerbox).
 
 ## Nuevo proyecto
 
@@ -61,7 +61,8 @@ Descargar, instalar y arrancar [Dockerbox](https://github.com/egibide/dockerbox)
 
 ## Crear la base de datos
 
-1. Acceder a [phpMyAdmin](https://phpmyadmin.dockerbox.test) y crear el usuario `app/12345Abcde` y marcar la opción para generar la base de datos asociada, que se llamará como el usuario.
+1. Acceder a [phpMyAdmin](https://phpmyadmin.dockerbox.test) y crear el usuario `app/12345Abcde` y marcar la opción para
+   generar la base de datos asociada, que se llamará como el usuario.
 
 2. Editar el `.env` de la aplicación:
 
@@ -82,11 +83,12 @@ Editar el `.env` de la aplicación y establecer estas dos variables:
 IGNITION_REMOTE_SITES_PATH=/var/www/html/app/
 IGNITION_LOCAL_SITES_PATH=/Users/.../dockerbox/www/app/
 ```
-    
-Las dos rutas tienen que apuntar a la carpeta raiz del proyecto Laravel, la primera dentro del workspace y la segunda en el sistema de archivos local.
+
+Las dos rutas tienen que apuntar a la carpeta raiz del proyecto Laravel, la primera dentro del workspace y la segunda en
+el sistema de archivos local.
 
 Más información en la documentación de [Flare](https://flareapp.io/docs/ignition-for-laravel/configuration).
-    
+
 ## Utilidades
 
 ### Lanzar comandos en el proyecto (composer, artisan, npm...)
