@@ -43,21 +43,42 @@ Descargar, instalar y arrancar [Dockerbox](https://github.com/ijaureguialzo/dock
     cd www/app && git init && git add . && git commit -m "Initial commit" && cd ../..
     ```
 
-### Configurar el nuevo sitio web como predeterminado
+### Añadir el nuevo sitio web a Dockerbox
 
-1. Ir a la carpeta `dockerbox/nginx` y editar el fichero `dockerbox.conf`:
+1. Ir a la carpeta `dockerbox/nginx` y duplicar el fichero `dockerbox.conf` a `app.conf`.
 
-    ```
-    root /var/www/html/app/public;
-    ```
+2. Editar el fichero `app.conf` y modificar las líneas siguientes para que coincidan con el nuevo sitio:
 
-2. Reiniciar los contenedores:
+   ```text
+   server_name app.dockerbox.test;
+   ```
+
+   ```text
+   root /var/www/html/app/public;
+   ```
+
+3. Editar el fichero `docker-compose.yml` y añadir una línea a la configuración de `https-portal`:
+
+   ```yml
+   app.dockerbox.test -> http://nginx:80
+   ```
+
+   > Recuerda añadir una coma en la línea anterior a la nueva para que la sintaxis del fichero YAML siga siendo correcta.
+
+4. Editar como root el fichero `/etc/hosts` (en macOS y Linux) o
+   en [Windows](https://www.adslzone.net/esenciales/windows-10/editar-archivo-host/) y añadir una nueva línea:
+
+   ```text
+   127.0.0.1    app.dockerbox.test
+   ```
+
+5. Reiniciar los contenedores:
 
     ```bash
     make restart
     ```
 
-3. Acceder al [sitio web](https://dockerbox.test).
+6. Acceder al [nuevo sitio](https://app.dockerbox.test).
 
 ## Crear la base de datos
 
@@ -66,7 +87,7 @@ Descargar, instalar y arrancar [Dockerbox](https://github.com/ijaureguialzo/dock
 
 2. Editar el `.env` de la aplicación:
 
-    ```
+    ```dotenv
     DB_CONNECTION=mysql
     DB_HOST=mariadb
     DB_PORT=3306
@@ -79,7 +100,7 @@ Descargar, instalar y arrancar [Dockerbox](https://github.com/ijaureguialzo/dock
 
 Editar el `.env` de la aplicación y establecer estas dos variables:
 
-```
+```dotenv
 IGNITION_REMOTE_SITES_PATH=/var/www/html/app/
 IGNITION_LOCAL_SITES_PATH=/Users/.../dockerbox/www/app/
 ```
@@ -93,7 +114,7 @@ Más información en la documentación de [Flare](https://flareapp.io/docs/ignit
 
 ### Lanzar comandos en el proyecto (composer, artisan, npm...)
 
-```
+```bash
 make workspace
 
 cd app
@@ -101,12 +122,12 @@ cd app
 
 Y después el comando que necesitemos. Por ejemplo:
 
-```
+```bash
 php artisan tinker
 ```
 
 o
 
-```
+```bash
 php artisan make:model Tarea -mcr
 ```
