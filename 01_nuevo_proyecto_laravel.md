@@ -6,7 +6,7 @@ Descargar, instalar y arrancar [Dockerbox](https://github.com/ijaureguialzo/dock
 
 ## Nuevo proyecto
 
-> :warning: Reemplazar `app` por el nombre del proyecto a partir de aquí.
+> :warning: Reemplazar `mi_aplicacion` por el nombre del proyecto a partir de aquí.
 
 ### Generar un proyecto nuevo en la carpeta `www`
 
@@ -19,7 +19,7 @@ Descargar, instalar y arrancar [Dockerbox](https://github.com/ijaureguialzo/dock
 2. Crear el proyecto:
 
     ```bash
-    composer create-project --prefer-dist laravel/laravel app
+    composer create-project --prefer-dist laravel/laravel mi_aplicacion
     ```
 
 3. Salir del `workspace`:
@@ -40,27 +40,27 @@ Descargar, instalar y arrancar [Dockerbox](https://github.com/ijaureguialzo/dock
 5. (Opcional) Poner el proyecto bajo control de versiones:
 
     ```bash
-    cd www/app && git init && git add . && git commit -m "Initial commit" && cd ../..
+    cd www/mi_aplicacion && git init && git add . && git commit -m "Initial commit" && cd ../..
     ```
 
 ### Añadir el nuevo sitio web a Dockerbox
 
-1. Ir a la carpeta `dockerbox/nginx` y duplicar el fichero `dockerbox.conf` a `app.conf`.
+1. Ir a la carpeta `dockerbox/nginx` y duplicar el fichero `dockerbox.conf` a `mi_aplicacion.conf`.
 
-2. Editar el fichero `app.conf` y modificar las líneas siguientes para que coincidan con el nuevo sitio:
+2. Editar el fichero `mi_aplicacion.conf` y modificar las líneas siguientes para que coincidan con el nuevo sitio:
 
    ```text
-   server_name app.dockerbox.test;
+   server_name mi_aplicacion.dockerbox.test;
    ```
 
    ```text
-   root /var/www/html/app/public;
+   root /var/www/html/mi_aplicacion/public;
    ```
 
 3. Editar el fichero `docker-compose.yml` y añadir una línea a la configuración de `https-portal`:
 
    ```yml
-   app.dockerbox.test -> http://nginx:80
+   mi_aplicacion.dockerbox.test -> http://nginx:80
    ```
 
    > :warning: Recuerda añadir una coma en la línea anterior a la nueva para que la sintaxis del fichero YAML siga siendo correcta.
@@ -69,7 +69,7 @@ Descargar, instalar y arrancar [Dockerbox](https://github.com/ijaureguialzo/dock
    en [Windows](https://www.adslzone.net/esenciales/windows-10/editar-archivo-host/) y añadir una nueva línea:
 
    ```text
-   127.0.0.1    app.dockerbox.test
+   127.0.0.1    mi_aplicacion.dockerbox.test
    ```
 
 5. Reiniciar los contenedores:
@@ -78,12 +78,12 @@ Descargar, instalar y arrancar [Dockerbox](https://github.com/ijaureguialzo/dock
     make restart
     ```
 
-6. Acceder al [nuevo sitio](https://app.dockerbox.test).
+6. Acceder al [nuevo sitio](https://mi_aplicacion.dockerbox.test).
 
 ## Crear la base de datos
 
-1. Acceder a [phpMyAdmin](https://phpmyadmin.dockerbox.test) y crear el usuario `app/12345Abcde` y marcar la opción para
-   generar la base de datos asociada, que se llamará como el usuario.
+1. Acceder a [phpMyAdmin](https://phpmyadmin.dockerbox.test) y crear el usuario `mi_aplicacion/12345Abcde` y marcar la
+   opción para generar la base de datos asociada, que se llamará como el usuario.
 
 2. Editar el `.env` de la aplicación:
 
@@ -91,8 +91,8 @@ Descargar, instalar y arrancar [Dockerbox](https://github.com/ijaureguialzo/dock
     DB_CONNECTION=mysql
     DB_HOST=mariadb
     DB_PORT=3306
-    DB_DATABASE=app
-    DB_USERNAME=app
+    DB_DATABASE=mi_aplicacion
+    DB_USERNAME=mi_aplicacion
     DB_PASSWORD=12345Abcde
     ```
 
@@ -101,8 +101,8 @@ Descargar, instalar y arrancar [Dockerbox](https://github.com/ijaureguialzo/dock
 Editar el `.env` de la aplicación y establecer estas dos variables:
 
 ```dotenv
-IGNITION_REMOTE_SITES_PATH=/var/www/html/app/
-IGNITION_LOCAL_SITES_PATH=/Users/.../dockerbox/www/app/
+IGNITION_REMOTE_SITES_PATH=/var/www/html/mi_aplicacion/
+IGNITION_LOCAL_SITES_PATH=/Users/.../dockerbox/www/mi_aplicacion/
 ```
 
 Las dos rutas tienen que apuntar a la carpeta raiz del proyecto Laravel, la primera dentro del workspace y la segunda en
@@ -117,7 +117,7 @@ Más información en la documentación de [Flare](https://flareapp.io/docs/ignit
 ```bash
 make workspace
 
-cd app
+cd mi_aplicacion
 ```
 
 Y después el comando que necesitemos. Por ejemplo:
