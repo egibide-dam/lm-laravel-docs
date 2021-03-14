@@ -37,7 +37,7 @@
     ```bash
     php artisan migrate
     ```
-    
+
     ```bash
     php artisan migrate:rollback
     ```
@@ -78,7 +78,7 @@
         return view('tareas.index', compact('tareas'));
     }
     ```
-    
+
 8. Vista:
 
     ```blade

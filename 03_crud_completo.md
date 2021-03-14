@@ -87,16 +87,16 @@
     php artisan db:seed
     ```
 
-    Si no reconoce el seeder:
-    
+   Si no reconoce el seeder:
+
     ```bash
     composer dump-autoload
     ```
 
 8. Recrear la base de datos completa:
 
-    > :warning: Atención, borra la base de datos y la vuelve a crear.
-    
+   > :warning: Atención, borra la base de datos y la vuelve a crear.
+
     ```bash
     php artisan migrate:fresh --seed
     ```
@@ -240,8 +240,8 @@
 
 2. Definir las relaciones entre entidades:
 
-    Lado 1:
-    
+   Lado 1:
+
     ```php
     // app/Entrada.php
     
@@ -255,9 +255,9 @@
         }
     }
     ```
-    
-    Lado N:
-        
+
+   Lado N:
+
     ```php
     // app/Comentario.php
     
@@ -544,8 +544,8 @@ class EntradaController extends Controller
 
 2. Escribir los tests:
 
-    Al escribir los tests seguiremos el orden "Given→When→Then".
-    
+   Al escribir los tests seguiremos el orden "Given→When→Then".
+
     ```php
     // tests/Feature/EntradaTest.php
 
