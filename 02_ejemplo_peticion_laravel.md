@@ -1,33 +1,37 @@
-# Cómo procesa Laravel una petición
+# ¿Cómo procesa Laravel una petición?
 
-1. Ruta: https://dockerbox.test/tareas
+1. Vamos a mostrar todas las entradas del blog en la página principal: https://blog.dockerbox.test/
 
-2. Generar un modelo y sus recursos asociados:
+2. Generar un modelo junto su la migración y el controlador de recursos asociado:
 
     ```bash
-    php artisan make:model Tarea -mcr
+    php artisan make:model Entrada -mcr
     ```
 
 3. Editar la migración y añadir las columnas:
 
     ```php
-    // database/migrations/2020_..._create_tareas_table.php
-    
-    class CreateTareasTable extends Migration
+    // database/migrations/2021_..._create_entradas_table.php
+
+    class CreateEntradasTable extends Migration
     {
         public function up()
         {
-            Schema::create('tareas', function (Blueprint $table) {
-                $table->bigIncrements('id');
+            Schema::create('entradas', function (Blueprint $table) {
+                $table->id();
+                
                 $table->string('titulo');
-                $table->boolean('completada')->default(false);
+                $table->text('texto')->nullable();
+                $table->dateTimeTz('fecha')->nullable();
+                $table->boolean('visible')->nullable()->default(false);
+
                 $table->timestamps();
             });
         }
     
         public function down()
         {
-            Schema::dropIfExists('tareas');
+            Schema::dropIfExists('entradas');
         }
     }
     ```
@@ -49,9 +53,11 @@
     ```
 
     ```php
-    $tarea = new Tarea();
-    $tarea->titulo = '¡Hola mundo!';
-    $tarea->save();
+    $entrada = new Entrada();
+    $entrada->titulo = '¡Hola mundo!';
+    $entrada->texto = 'Esta es la primera entrada del blog.';
+    $entrada->fecha = now();
+    $entrada->save();
     ```
 
 6. Rutas:
@@ -59,7 +65,7 @@
     ```php
     // routes/web.php
     
-    Route::get('/tareas', 'TareaController@index');
+    Route::get('/', [EntradaController::class, 'index']);
     ```
 
     ```bash
@@ -69,33 +75,43 @@
 7. Acción en el controlador:
 
     ```php
-    // app/Http/Controllers/TareaController.php
+    // app/Http/Controllers/EntradaController.php
     
     public function index()
     {
-        $tareas = Tarea::all();
-    
-        return view('tareas.index', compact('tareas'));
+        $entradas = Entrada::all();
+
+        return view('entradas.index', compact('entradas'));
     }
     ```
 
 8. Vista:
 
     ```blade
-    {{-- resources/views/tareas/index.blade.php --}}
+    {{-- resources/views/entradas/index.blade.php --}}
     
     @extends('layouts.app')
     
     @section('content')
-
-        <h1>Tareas</h1>    
-        <ul>
-            @foreach($tareas as $tarea)
-                <li>{{ $tarea->titulo }}</li>
-            @endforeach
-        </ul>
     
-    @endsection 
+        <h1>Entradas</h1>
+    
+        <table border="1">
+            <tr>
+                <th>Título</th>
+                <th>Texto</th>
+                <th>Fecha</th>
+            </tr>
+            @foreach($entradas as $entrada)
+                <tr>
+                    <td>{{ $entrada->titulo }}</td>
+                    <td>{{ $entrada->texto }}</td>
+                    <td>{{ $entrada->fecha }}</td>
+                </tr>
+            @endforeach
+        </table>
+    
+    @endsection
     ```
 
 8. Layout general de la página:
@@ -109,7 +125,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
     
-        <title>Tareas</title>
+        <title>Mi blog</title>
     </head>
     <body>
     
