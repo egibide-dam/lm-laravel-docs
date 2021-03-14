@@ -10,23 +10,38 @@
     php artisan make:model Entrada -a
     ```
 
+    Si ya tenemos creada la migración y el controlador con `-mcr`, podemos crear el _factory_ y el _seeder_ por separado:
+
+    ```bash
+    php artisan make:factory EntradaFactory
+    php artisan make:seeder EntradaSeeder
+    ```
+
 2. Editar la migración:
 
     ```php
-    // database/migrations/2020..._create_entradas_table.php
-    
-    public function up()
+    // database/migrations/2021_..._create_entradas_table.php
+
+    class CreateEntradasTable extends Migration
     {
-        Schema::create('entradas', function (Blueprint $table) {
-            $table->bigIncrements('id');
+        public function up()
+        {
+            Schema::create('entradas', function (Blueprint $table) {
+                $table->id();
+                
+                $table->string('titulo');
+                $table->text('texto')->nullable();
+                $table->dateTimeTz('fecha')->nullable();
+                $table->boolean('visible')->nullable()->default(false);
+
+                $table->timestamps();
+            });
+        }
     
-            $table->string('titulo');
-            $table->text('texto')->nullable();
-            $table->dateTimeTz('fecha')->nullable();
-            $table->boolean('publicada')->nullable()->default(false);
-    
-            $table->timestamps();
-        });
+        public function down()
+        {
+            Schema::dropIfExists('entradas');
+        }
     }
     ```
 
@@ -36,22 +51,28 @@
     php artisan migrate
     ```
 
-4. Editar el factory:
+4. Editar el _factory_:
 
     ```php
     // database/factories/EntradaFactory.php
+
+    class EntradaFactory extends Factory
+    {
+        protected $model = Entrada::class;
     
-    $factory->define(Entrada::class, function (Faker $faker) {
-        return [
-            'titulo' => $faker->sentence(3),
-            'texto' => $faker->text(200),
-            'fecha' => now(),
-            'publicada' => false,
-        ];
-    }); 
+        public function definition()
+        {
+            return [
+                'titulo' => $this->faker->sentence(3),
+                'texto' => $this->faker->text(100),
+                'fecha' => $this->faker->dateTime(),
+                'visible' => $this->faker->boolean(),
+            ];
+        }
+    }
     ```
 
-5. Editar el seeder:
+5. Editar el _seeder_:
 
     ```php
     // database/seeds/EntradaSeeder.php
@@ -60,14 +81,12 @@
     {
         public function run()
         {
-            for ($i = 0; $i < 5; $i++) {
-                factory(Entrada::class)->create();
-            }
+            Entrada::factory(10)->create();
         }
     }
     ```
 
-6. Activar el seeder:
+6. Activar el _seeder_:
 
     ```php
     // database/seeds/DatabaseSeeder.php
@@ -76,18 +95,20 @@
     {
         public function run()
         {
-            $this->call(EntradaSeeder::class);
+            $this->call([
+                EntradaSeeder::class,
+            ]);
         }
     }
     ```
 
-7. Lanzar el seeder:
+7. Lanzar el _seeder_:
 
     ```bash
     php artisan db:seed
     ```
 
-   Si no reconoce el seeder:
+    Si no reconoce el _seeder_:
 
     ```bash
     composer dump-autoload
@@ -95,25 +116,27 @@
 
 8. Recrear la base de datos completa:
 
-   > :warning: Atención, borra la base de datos y la vuelve a crear.
+    > :warning: Atención, borra la base de datos y la vuelve a crear.
 
     ```bash
     php artisan migrate:fresh --seed
     ```
 
-9. Añadir los campos _fillable_ y _dates_:
+9. Añadir los campos _fillable_ y _casts_:
 
     ```php
-    // app/Entrada.php
+    // app/Models/Entrada.php
     
     class Entrada extends Model
     {
+        use HasFactory;
+    
         protected $fillable = [
-            'titulo', 'texto', 'fecha', 'publicada'
+            'titulo', 'texto', 'fecha', 'visible'
         ];
     
-        protected $dates = [
-            'created_at', 'updated_at', 'fecha'
+        protected $casts = [
+            'fecha' => 'datetime',
         ];
     }
     ```
