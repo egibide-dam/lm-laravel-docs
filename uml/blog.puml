@@ -1,0 +1,21 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam nodesep 100
+skinparam ranksep 80
+
+class Entrada {
+- titulo: String
+- texto: Text
+- fecha: DateTime
+- visible: Boolean
+}
+
+class Comentario {
+- email: String
+- texto: Text
+- fecha: DateTime
+- visible: Boolean
+}
+
+Entrada "1" - "*" Comentario
+@enduml

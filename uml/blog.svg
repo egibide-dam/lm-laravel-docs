@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="120px" preserveAspectRatio="none" style="width:339px;height:120px;" version="1.1" viewBox="0 0 339 120" width="339px" zoomAndPan="magnify"><defs><filter height="300%" id="f13da2up64q22z" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[6694c18989b8e2458a5d3d469144568d]
+class Entrada--><rect codeLine="5" fill="#FEFECE" filter="url(#f13da2up64q22z)" height="99.2188" id="Entrada" style="stroke:#A80036;stroke-width:1.5;" width="109" x="7" y="7"/><ellipse cx="34.15" cy="23" fill="#ADD1B2" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M37.1188,28.6406 Q36.5406,28.9375 35.9,29.0781 Q35.2594,29.2344 34.5563,29.2344 Q32.0563,29.2344 30.7281,27.5938 Q29.4156,25.9375 29.4156,22.8125 Q29.4156,19.6875 30.7281,18.0313 Q32.0563,16.375 34.5563,16.375 Q35.2594,16.375 35.9,16.5313 Q36.5563,16.6875 37.1188,16.9844 L37.1188,19.7031 Q36.4938,19.125 35.9,18.8594 Q35.3063,18.5781 34.6813,18.5781 Q33.3375,18.5781 32.65,19.6563 Q31.9625,20.7188 31.9625,22.8125 Q31.9625,24.9063 32.65,25.9844 Q33.3375,27.0469 34.6813,27.0469 Q35.3063,27.0469 35.9,26.7813 Q36.4938,26.5 37.1188,25.9219 L37.1188,28.6406 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="50" x="50.85" y="27.1543">Entrada</text><line style="stroke:#A80036;stroke-width:1.5;" x1="8" x2="115" y1="39" y2="39"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="74" x="13" y="53.2104">-titulo: String</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="64" x="13" y="66.0151">-texto: Text</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="97" x="13" y="78.8198">-fecha: DateTime</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="94" x="13" y="91.6245">-visible: Boolean</text><line style="stroke:#A80036;stroke-width:1.5;" x1="8" x2="115" y1="98.2188" y2="98.2188"/><!--MD5=[92bd6e401080a2853674e2906bfd22c8]
+class Comentario--><rect codeLine="12" fill="#FEFECE" filter="url(#f13da2up64q22z)" height="99.2188" id="Comentario" style="stroke:#A80036;stroke-width:1.5;" width="109" x="216" y="7"/><ellipse cx="233.25" cy="23" fill="#ADD1B2" rx="11" ry="11" style="stroke:#A80036;stroke-width:1.0;"/><path d="M236.2188,28.6406 Q235.6406,28.9375 235,29.0781 Q234.3594,29.2344 233.6563,29.2344 Q231.1563,29.2344 229.8281,27.5938 Q228.5156,25.9375 228.5156,22.8125 Q228.5156,19.6875 229.8281,18.0313 Q231.1563,16.375 233.6563,16.375 Q234.3594,16.375 235,16.5313 Q235.6563,16.6875 236.2188,16.9844 L236.2188,19.7031 Q235.5938,19.125 235,18.8594 Q234.4063,18.5781 233.7813,18.5781 Q232.4375,18.5781 231.75,19.6563 Q231.0625,20.7188 231.0625,22.8125 Q231.0625,24.9063 231.75,25.9844 Q232.4375,27.0469 233.7813,27.0469 Q234.4063,27.0469 235,26.7813 Q235.5938,26.5 236.2188,25.9219 L236.2188,28.6406 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="72" x="247.75" y="27.1543">Comentario</text><line style="stroke:#A80036;stroke-width:1.5;" x1="217" x2="324" y1="39" y2="39"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="77" x="222" y="53.2104">-email: String</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="64" x="222" y="66.0151">-texto: Text</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="97" x="222" y="78.8198">-fecha: DateTime</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="94" x="222" y="91.6245">-visible: Boolean</text><line style="stroke:#A80036;stroke-width:1.5;" x1="217" x2="324" y1="98.2188" y2="98.2188"/><!--MD5=[cd4711ed8b9c9d9bc9945e55a9fe769b]
+link Entrada to Comentario--><path codeLine="19" d="M116.1992,56.5 C149.4502,56.5 182.7012,56.5 215.9523,56.5 " fill="none" id="Entrada-Comentario" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="8" x="124.0869" y="52.5533">1</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="7" x="201.1521" y="52.5533">*</text><!--MD5=[418f25f5f5480e62024426e9b313479d]
+@startuml
+skinparam classAttributeIconSize 0
+skinparam nodesep 100
+skinparam ranksep 80
+
+class Entrada {
+- titulo: String
+- texto: Text
+- fecha: DateTime
+- visible: Boolean
+}
+
+class Comentario {
+- email: String
+- texto: Text
+- fecha: DateTime
+- visible: Boolean
+}
+
+Entrada "1" - "*" Comentario
+@enduml
+
+PlantUML version 1.2021.01(Tue Feb 02 07:55:08 UTC 2021)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: null
+--></g></svg>
