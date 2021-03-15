@@ -591,7 +591,7 @@ class EntradaController extends Controller
 
     ```php
     // tests/Feature/EntradaTest.php
-
+    
     class EntradaTest extends TestCase
     {
         use RefreshDatabase;
@@ -599,7 +599,7 @@ class EntradaController extends Controller
         public function testIndex()
         {
             // Given
-            $entrada = factory(Entrada::class)->create();
+            $entrada = Entrada::factory()->create();
     
             // When
             $response = $this->get(route('entradas.index'));
@@ -632,7 +632,7 @@ class EntradaController extends Controller
         public function testStore()
         {
             // Given
-            $entrada = factory(Entrada::class)->make();
+            $entrada = Entrada::factory()->make();
     
             // When
             $this->post(route('entradas.store'), $entrada->toArray());
@@ -644,7 +644,7 @@ class EntradaController extends Controller
         public function testStoreRequiresTitulo()
         {
             // Given
-            $entrada = factory(Entrada::class)->make(['titulo' => null]);
+            $entrada = Entrada::factory()->make(['titulo' => null]);
     
             // When
             // Then
@@ -655,7 +655,7 @@ class EntradaController extends Controller
         public function testShow()
         {
             // Given
-            $entrada = factory(Entrada::class)->create();
+            $entrada = Entrada::factory()->create();
     
             // When
             $response = $this->get(route('entradas.show', $entrada));
@@ -667,7 +667,7 @@ class EntradaController extends Controller
         public function testEdit()
         {
             // Given
-            $entrada = factory(Entrada::class)->create();
+            $entrada = Entrada::factory()->create();
     
             // When
             $response = $this->get(route('entradas.edit', $entrada), $entrada->toArray());
@@ -679,7 +679,7 @@ class EntradaController extends Controller
         public function testUpdate()
         {
             // Given
-            $entrada = factory(Entrada::class)->create();
+            $entrada = Entrada::factory()->create();
             $entrada->titulo = "Actualizada";
     
             // When
@@ -692,7 +692,7 @@ class EntradaController extends Controller
         public function testDelete()
         {
             // Given
-            $entrada = factory(Entrada::class)->create();
+            $entrada = Entrada::factory()->create();
     
             // When
             $this->delete(route('entradas.destroy', $entrada));
@@ -700,7 +700,7 @@ class EntradaController extends Controller
             // Then
             $this->assertDatabaseMissing('entradas', $entrada->toArray());
         }
-    }
+    } 
     ```
 
 3. Lanzar los tests:
