@@ -10,7 +10,7 @@
     php artisan make:model Entrada -a
     ```
 
-    Si ya tenemos creada la migración y el controlador con `-mcr`, podemos crear el _factory_ y el _seeder_ por separado:
+   Si ya tenemos creada la migración y el controlador con `-mcr`, podemos crear el _factory_ y el _seeder_ por separado:
 
     ```bash
     php artisan make:factory EntradaFactory
@@ -108,7 +108,7 @@
     php artisan db:seed
     ```
 
-    Si no reconoce el _seeder_:
+   Si no reconoce el _seeder_:
 
     ```bash
     composer dump-autoload
@@ -116,7 +116,7 @@
 
 8. Recrear la base de datos completa:
 
-    > :warning: Atención, borra la base de datos y la vuelve a crear.
+   > :warning: Atención, borra la base de datos y la vuelve a crear.
 
     ```bash
     php artisan migrate:fresh --seed
