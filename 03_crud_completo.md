@@ -134,10 +134,12 @@
         protected $fillable = [
             'titulo', 'texto', 'fecha', 'visible'
         ];
-    
+
         protected $casts = [
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
             'fecha' => 'datetime',
-        ];
+        ];   
     }
     ```
 
@@ -194,13 +196,7 @@
     {
         public function run()
         {
-            $entrada = Entrada::find(1);
-    
-            for ($i = 0; $i < 5; $i++) {
-                factory(Comentario::class)->create([
-                    'entrada_id' => $entrada->id
-                ]);
-            }
+            Comentario::factory(10)->create();
         }
     }
     ```
@@ -214,25 +210,31 @@
     {
         public function run()
         {
-            $this->call(EntradaSeeder::class);
-            $this->call(ComentarioSeeder::class);
+            $this->call([
+                EntradaSeeder::class,
+                ComentarioSeeder::class,
+            ]);
         }
     }
     ```
 
-6. Añadir los campos _fillable_ y _dates_:
+6. Añadir los campos _fillable_ y _casts_ al modelo:
 
     ```php
-    // app/Comentario.php
+    // app/Models/Comentario.php
     
     class Comentario extends Model
     {
+        use HasFactory;
+    
         protected $fillable = [
             'email', 'texto', 'fecha', 'publicado'
         ];
     
-        protected $dates = [
-            'created_at', 'updated_at', 'fecha'
+        protected $casts = [
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+            'fecha' => 'datetime',
         ];
     }
     ```
