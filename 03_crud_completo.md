@@ -152,18 +152,18 @@
 2. Migración:
 
     ```php
-    // database/migrations/2020_..._create_comentarios_table.php
+    // database/migrations/2021_..._create_comentarios_table.php
     
     public function up()
     {
         Schema::create('comentarios', function (Blueprint $table) {
-            $table->bigIncrements('id');
-    
+            $table->id();
+
             $table->string('email');
             $table->text('texto')->nullable();
             $table->dateTimeTz('fecha')->nullable();
-            $table->boolean('publicado')->nullable()->default(false);
-    
+            $table->boolean('visible')->nullable()->default(false);
+
             $table->timestamps();
         });
     }
@@ -173,15 +173,16 @@
 
     ```php
     // database/factories/ComentarioFactory.php
-    
-    $factory->define(Comentario::class, function (Faker $faker) {
+
+    public function definition()
+    {
         return [
-            'email' => $faker->email,
-            'texto' => $faker->text(200),
-            'fecha' => now(),
-            'publicado' => $faker->boolean(30),
+            'email' => $this->faker->email(),
+            'texto' => $this->faker->text(100),
+            'fecha' => $this->faker->dateTime(),
+            'visible' => $this->faker->boolean(),
         ];
-    });
+    }
     ```
 
 4. Seeder:
