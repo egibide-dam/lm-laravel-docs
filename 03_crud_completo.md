@@ -361,7 +361,7 @@ class EntradaController extends Controller
             'titulo' => request('titulo'),
             'texto' => request('texto'),
             'fecha' => request('fecha'),
-            'publicada' => $request->has('publicada'),
+            'visible' => $request->has('visible'),
         ]);
 
         return redirect(route('entradas.index'));
@@ -387,7 +387,7 @@ class EntradaController extends Controller
             'titulo' => request('titulo'),
             'texto' => request('texto'),
             'fecha' => request('fecha'),
-            'publicada' => $request->has('publicada'),
+            'visible' => $request->has('visible'),
         ]);
 
         return redirect(route('entradas.index'));
@@ -413,7 +413,7 @@ class EntradaController extends Controller
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Blog</title>
+    <title>Mi blog</title>
 </head>
 <body>
 
@@ -437,7 +437,7 @@ class EntradaController extends Controller
         <tr>
             <th>Título</th>
             <th>Fecha</th>
-            <th>Publicada</th>
+            <th>Visible</th>
             <th colspan="2">Acciones</th>
         </tr>
         </thead>
@@ -446,7 +446,7 @@ class EntradaController extends Controller
             <tr>
                 <td><a href="{{ route('entradas.show', $entrada->id) }}">{{ $entrada->titulo }}</a></td>
                 <td>{{ $entrada->fecha }}</td>
-                <td>{{ $entrada->publicada ? 'Sí' : 'No' }}</td>
+                <td>{{ $entrada->visible ? 'Sí' : 'No' }}</td>
                 <td><a href="{{ route('entradas.edit', $entrada->id) }}">Editar</a></td>
                 <td>
                     <form action="{{ route('entradas.destroy', $entrada->id) }}" method="POST">
@@ -487,8 +487,8 @@ class EntradaController extends Controller
             <td>{{ $entrada->fecha }}</td>
         </tr>
         <tr>
-            <th>Publicada</th>
-            <td>{{ $entrada->publicada ? 'Sí' : 'No' }}</td>
+            <th>Visible</th>
+            <td>{{ $entrada->visible ? 'Sí' : 'No' }}</td>
         </tr>
         </tbody>
     </table>
@@ -525,8 +525,8 @@ class EntradaController extends Controller
             <input type="datetime-local" name="fecha" value="{{ now() }}"/>
         </div>
         <div>
-            <label>Publicada: </label>
-            <input type="checkbox" name="publicada" checked/>
+            <label>Visible: </label>
+            <input type="checkbox" name="visible" checked/>
         </div>
         <input type="submit" name="guardar" value="Guardar"/>
     </form>
@@ -564,8 +564,8 @@ class EntradaController extends Controller
             <input type="datetime-local" name="fecha" value="{{ $entrada->fecha ?: now() }}"/>
         </div>
         <div>
-            <label>Publicada: </label>
-            <input type="checkbox" name="publicada" {{ $entrada->publicada ? 'checked' : '' }} />
+            <label>Visible: </label>
+            <input type="checkbox" name="visible" {{ $entrada->visible ? 'checked' : '' }} />
         </div>
         <input type="submit" name="guardar" value="Guardar"/>
     </form>
