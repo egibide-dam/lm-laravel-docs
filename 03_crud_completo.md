@@ -244,21 +244,22 @@
 1. Añadir las _foreign keys_ a las tablas:
 
     ```php
-    // database/migrations/2020_..._create_comentarios_table.php
+    // database/migrations/2021_..._create_comentarios_table.php
     
     public function up()
     {
         Schema::create('comentarios', function (Blueprint $table) {
-            $table->bigIncrements('id');
-    
+            $table->id();
+
             $table->string('email');
             $table->text('texto')->nullable();
             $table->dateTimeTz('fecha')->nullable();
-            $table->boolean('publicado')->nullable()->default(false);
-    
-            $table->bigInteger('entrada_id')->unsigned()->index();
-            $table->foreign('entrada_id')->references('id')->on('entradas')->onDelete('cascade');
-    
+            $table->boolean('visible')->nullable()->default(false);
+
+            $table->foreignId('entrada_id')->constrained()->onDelete('cascade');
+            //$table->unsignedBigInteger('entrada_id');
+            //$table->foreign('entrada_id')->references('id')->on('entradas')->onDelete('cascade');
+
             $table->timestamps();
         });
     }
@@ -269,11 +270,11 @@
    Lado 1:
 
     ```php
-    // app/Entrada.php
+    // app/Models/Entrada.php
     
     class Entrada extends Model
     {
-        ...
+        // ...
     
         public function comentarios()
         {
@@ -285,17 +286,33 @@
    Lado N:
 
     ```php
-    // app/Comentario.php
+    // app/Models/Comentario.php
     
     class Comentario extends Model
     {
-        ...
+        // ...
     
         public function entrada()
         {
             return $this->belongsTo(Entrada::class);
         }
     } 
+    ```
+
+3. Modificar el seeder:
+
+    ```php
+    // database/seeds/ComentarioSeeder.php
+    
+    class ComentarioSeeder extends Seeder
+    {
+        public function run()
+        {
+            Comentario::factory(10)->create([
+                'entrada_id' => 1
+            ]);
+        }
+    }
     ```
 
 ## Rutas
@@ -305,8 +322,8 @@
     ```php
     // routes/web.php
     
-    Route::resource('entradas', 'EntradaController');
-    Route::resource('comentarios', 'ComentarioController');
+    Route::resource('entradas', EntradaController::class);
+    Route::resource('comentarios', ComentarioController::class);
     ```
 
 2. Ver las rutas:
