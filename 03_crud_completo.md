@@ -6,6 +6,8 @@
 
 1. Generar el modelo y sus recursos asociados:
 
+   > :book: [Eloquent: Getting Started](https://laravel.com/docs/8.x/eloquent)
+
     ```bash
     php artisan make:model Entrada -a
     ```
@@ -18,6 +20,8 @@
     ```
 
 2. Editar la migración:
+
+   > :book: [Database: Migrations](https://laravel.com/docs/8.x/migrations)
 
     ```php
     // database/migrations/2021_..._create_entradas_table.php
@@ -53,6 +57,9 @@
 
 4. Editar el _factory_:
 
+   > :book: [Defining Model Factories](https://laravel.com/docs/8.x/database-testing#defining-model-factories)
+   > :book: [Faker](https://fakerphp.github.io)
+
     ```php
     // database/factories/EntradaFactory.php
 
@@ -73,6 +80,8 @@
     ```
 
 5. Editar el _seeder_:
+
+   > :book: [Database: Seeding](https://laravel.com/docs/8.x/seeding)
 
     ```php
     // database/seeds/EntradaSeeder.php
@@ -123,6 +132,9 @@
     ```
 
 9. Añadir los campos _fillable_ y _casts_:
+
+   > :book: [Mass Assignment](https://laravel.com/docs/8.x/eloquent#mass-assignment)
+   > :book: [Eloquent: Mutators & Casting](https://laravel.com/docs/8.x/eloquent-mutators)
 
     ```php
     // app/Models/Entrada.php
@@ -241,6 +253,10 @@
 
 ### Relación 1→N
 
+> :book: [Eloquent: Relationships](https://laravel.com/docs/8.x/eloquent-relationships)
+> :book: [Eloquent Relationships Cheat Sheet](https://hackernoon.com/eloquent-relationships-cheat-sheet-5155498c209)
+> :book: [Creating Columns](https://laravel.com/docs/8.x/migrations#creating-columns)
+
 1. Añadir las _foreign keys_ a las tablas:
 
     ```php
@@ -256,7 +272,10 @@
             $table->dateTimeTz('fecha')->nullable();
             $table->boolean('visible')->nullable()->default(false);
 
+            // Sintaxis abreviada, utilizando las convenciones del ORM
             $table->foreignId('entrada_id')->constrained()->onDelete('cascade');
+
+            // Sintaxis completa, personalizable
             //$table->unsignedBigInteger('entrada_id');
             //$table->foreign('entrada_id')->references('id')->on('entradas')->onDelete('cascade');
 
