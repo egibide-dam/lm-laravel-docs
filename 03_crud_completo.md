@@ -336,6 +336,8 @@
 
 ## Rutas
 
+> :book: [Routing](https://laravel.com/docs/8.x/routing)
+
 1. Definir las rutas:
 
     ```php
@@ -352,6 +354,9 @@
     ```
 
 ## Controlador
+
+> :book: [Controllers](https://laravel.com/docs/8.x/controllers)
+> :book: [Validation](https://laravel.com/docs/8.x/validation)
 
 ```php
 // app/Http/Controllers/EntradaController.php
@@ -423,6 +428,8 @@ class EntradaController extends Controller
 
 ## Vistas
 
+> :book: [Views](https://laravel.com/docs/8.x/views)
+
 ```blade
 {{-- resources/views/layouts/app.blade.php --}}
 
@@ -441,6 +448,8 @@ class EntradaController extends Controller
 </body>
 </html>
 ```
+
+> :book: [CSRF Protection](https://laravel.com/docs/8.x/csrf)
 
 ```blade
 {{-- resources/views/entradas/index.blade.php --}}
@@ -597,6 +606,9 @@ class EntradaController extends Controller
 ```
 
 ## Tests
+
+> :book: [Testing: Getting Started](https://laravel.com/docs/8.x/testing)
+> :book: [Database Testing](https://laravel.com/docs/8.x/database-testing)
 
 1. Crear la clase de test:
 
