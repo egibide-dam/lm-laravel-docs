@@ -477,7 +477,8 @@ class EntradaController extends Controller
                 <td>{{ $entrada->visible ? 'Sí' : 'No' }}</td>
                 <td><a href="{{ route('entradas.edit', $entrada->id) }}">Editar</a></td>
                 <td>
-                    <form action="{{ route('entradas.destroy', $entrada->id) }}" method="POST">
+                    <form action="{{ route('entradas.destroy', $entrada->id) }}" method="POST"
+                          onsubmit="return confirm('¿Estás seguro?');">
                         @csrf
                         @method('DELETE')
                         <input type="submit" name="borrar" value="Borrar"/>
