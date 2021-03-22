@@ -259,18 +259,16 @@
 
 1. Añadir las _foreign keys_ a las tablas:
 
+    ```bash
+    php artisan make:migration add_entrada_id_to_comentarios_table
+    ```
+
     ```php
-    // database/migrations/2021_..._create_comentarios_table.php
+    // database/migrations/2021_..._add_entrada_id_to_comentarios_table.php
     
     public function up()
     {
-        Schema::create('comentarios', function (Blueprint $table) {
-            $table->id();
-
-            $table->string('email');
-            $table->text('texto')->nullable();
-            $table->dateTimeTz('fecha')->nullable();
-            $table->boolean('visible')->nullable()->default(false);
+        Schema::table('comentarios', function (Blueprint $table) {
 
             // Sintaxis abreviada, utilizando las convenciones del ORM
             $table->foreignId('entrada_id')->constrained()->onDelete('cascade');
@@ -278,10 +276,12 @@
             // Sintaxis completa, personalizable
             //$table->unsignedBigInteger('entrada_id');
             //$table->foreign('entrada_id')->references('id')->on('entradas')->onDelete('cascade');
-
-            $table->timestamps();
         });
     }
+    ```
+
+    ```bash
+    php artisan migrate
     ```
 
 2. Definir las relaciones entre entidades:
