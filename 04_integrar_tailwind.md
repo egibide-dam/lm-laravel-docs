@@ -1,6 +1,63 @@
-# Integrar una plantilla de Bootstrap en Laravel
+# Tailwind CSS en Laravel
 
-Vamos a integrar la plantilla de ejemplo [starter template](https://getbootstrap.com/docs/4.4/examples/starter-template/).
+## Instalar Tailwind en el proyecto Laravel
+
+> :book: [Install Tailwind CSS with Laravel](https://tailwindcss.com/docs/guides/laravel)
+
+```javascript
+// tailwind.config.js
+
+module.exports = {
+    purge: [
+        './resources/**/*.blade.php',
+        './resources/**/*.js',
+        './resources/**/*.vue',
+    ],
+    darkMode: false, // or 'media' or 'class'
+    theme: {
+        extend: {},
+    },
+    variants: {
+        extend: {},
+    },
+    plugins: [],
+}
+```
+
+```javascript
+// webpack.mix.js
+
+const mix = require('laravel-mix');
+
+/*
+ |--------------------------------------------------------------------------
+ | Mix Asset Management
+ |--------------------------------------------------------------------------
+ |
+ | Mix provides a clean, fluent API for defining some Webpack build steps
+ | for your Laravel applications. By default, we are compiling the CSS
+ | file for the application as well as bundling up all the JS files.
+ |
+ */
+
+mix.js('resources/js/app.js', 'public/js')
+    .postCss('resources/css/app.css', 'public/css', [
+        require("tailwindcss"),
+    ]);
+```
+
+## Configurar PhpStorm para que indexe archivos grandes
+
+El fichero CSS que genera Tailwind ocupa más de 3MB y PhpStorm no lo indexa, por lo que no tendremos autocompletado de las clases de Tailwind. 
+
+Para que lo haga, vamos a `Help -> Edit Custom Properties...` y añadimos una línea con el nuevo tamaño máximo en KB:
+
+```dotenv
+idea.max.intellisense.filesize=256000
+```
+
+> :bulb: Hay que reiniciar PhpStorm para que el valor tenga efecto.
+
 
 ## Layout
 
