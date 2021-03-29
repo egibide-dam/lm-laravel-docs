@@ -48,7 +48,8 @@ mix.js('resources/js/app.js', 'public/js')
 
 ## Configurar PhpStorm para que indexe archivos grandes
 
-El fichero CSS que genera Tailwind ocupa más de 3MB y PhpStorm no lo indexa, por lo que no tendremos autocompletado de las clases de Tailwind. 
+El fichero CSS que genera Tailwind ocupa más de 3MB y PhpStorm no lo indexa, por lo que no tendremos autocompletado de
+las clases de Tailwind.
 
 Para que lo haga, vamos a `Help -> Edit Custom Properties...` y añadimos una línea con el nuevo tamaño máximo en KB:
 
@@ -58,261 +59,92 @@ idea.max.intellisense.filesize=256000
 
 > :bulb: Hay que reiniciar PhpStorm para que el valor tenga efecto.
 
+## Layout y vistas
 
-## Layout
+```blade
+{{-- resources/views/layouts/app.blade.php --}}
 
-1. Partimos del [layout básico](https://getbootstrap.com/docs/4.4/getting-started/introduction/) que nos propone Bootstrap en su documentación y lo adaptamos con las directivas de Laravel:
+<!doctype html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
-    ```blade
-    {{-- resources/views/layouts/app.blade.php --}}
-    
-    <!doctype html>
-    <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
-        <!-- Bootstrap CSS -->
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    
-        <title>Blog</title>
-    </head>
-    <body>
-    
-    @yield('content')
-    
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-            integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-            crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-            crossorigin="anonymous"></script>
-    </body>
-    </html>
-    ```
+    <title>Mi blog</title>
+</head>
+<body>
 
-2. Creamos y enlazamos la hoja de estilos del tema:
+@yield('content')
 
-    ```css
-    /* public/css/starter-template.css */
-    
-    body {
-        padding-top: 5rem;
-    }
-    
-    .starter-template {
-        padding: 3rem 1.5rem;
-        /* text-align: center; */
-    }
-    ```
+</body>
+</html>
+```
 
-    ```blade
-    {{-- resources/views/layouts/app.blade.php --}}
-    
-    <!doctype html>
-    <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        ...
-    
-        <title>Blog</title>
-    
-        <link href="{{ asset('css/starter-template.css') }}" rel="stylesheet">
-    </head>
-    ...
-    ```
+```blade
+{{-- resources/views/entradas/index.blade.php --}}
 
-3. Añadimos el resto del layout de la plantilla:
+@extends('layouts.app')
 
-    ```blade
-    {{-- resources/views/layouts/app.blade.php --}}
-    
-    ...
-    
-    <body>
-    
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand" href="#">Navbar</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
-                aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    
-        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false">Dropdown</a>
-                    <div class="dropdown-menu" aria-labelledby="dropdown01">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                </li>
-            </ul>
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-                <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-            </form>
-        </div>
-    </nav>
-    
-    <main role="main" class="container">
-    
-        <div class="starter-template">
-            @yield('content')
-        </div>
-    
-    </main><!-- /.container -->
-    
-    <!-- Optional JavaScript -->
-    
-    ...
-    
-    </body>
-    </html>
-    ```
+@section('content')
 
-4. Refactorizamos y extraemos la barra de navegación a un _partial_:
+    <h1>Entradas</h1>
 
-    ```blade
-    {{-- resources/views/layouts/menu.blade.php --}}
-    
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-        <a class="navbar-brand" href="#">Navbar</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
-                aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    
-        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false">Dropdown</a>
-                    <div class="dropdown-menu" aria-labelledby="dropdown01">
-                        <a class="dropdown-item" href="#">Action</a>
-                        <a class="dropdown-item" href="#">Another action</a>
-                        <a class="dropdown-item" href="#">Something else here</a>
-                    </div>
-                </li>
-            </ul>
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-                <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-            </form>
-        </div>
-    </nav>
-    ```
-    
-    ```blade
-    {{-- resources/views/layouts/app.blade.php --}}
-    
-    ...
-    
-    <body>
-    
-    @include('layouts.menu')
-    
-    <main role="main" class="container">
-    
-        <div class="starter-template">
-            @yield('content')
-        </div>
-    
-    </main><!-- /.container -->
-    
-    <!-- Optional JavaScript -->
-    
-    ...
-    
-    </body>
-    </html>
-    ```
+    <div class="container mx-auto">
 
-5. Modificamos las vistas para que utilicen las clases de Bootstrap:
-
-    ```blade
-    {{-- resources/views/entradas/index.blade.php --}}
-    
-    @extends('layouts.app')
-    
-    @section('content')
-    
-        <h1>Entradas</h1>
-    
-        <table class="table table-hover">
-            <thead class="thead-dark">
+        <table class="container table-fixed tabla-hover border my-8">
+            <thead>
             <tr>
                 <th>Título</th>
                 <th>Fecha</th>
-                <th>Publicada</th>
-                <th colspan="2">Acciones</th>
+                <th class="text-center">Visible</th>
+                <th colspan="2" class="w-1/6">Acciones</th>
             </tr>
             </thead>
             <tbody>
             @foreach($entradas as $entrada)
                 <tr>
-                    <td class="align-middle">
+                    <td>
                         <a href="{{ route('entradas.show', $entrada->id) }}">{{ $entrada->titulo }}</a>
                     </td>
-                    <td class="align-middle">{{ $entrada->fecha }}</td>
-                    <td class="align-middle">{{ $entrada->publicada ? 'Sí' : 'No' }}</td>
-                    <td><a class="btn btn-secondary" href="{{ route('entradas.edit', $entrada->id) }}">Editar</a></td>
+                    <td>{{ $entrada->fecha }}</td>
+                    <td class="text-center">{{ $entrada->visible ? 'Sí' : 'No' }}</td>
                     <td>
-                        <form action="{{ route('entradas.destroy', $entrada->id) }}" method="POST">
+                        <a class="btn-secondary" href="{{ route('entradas.edit', $entrada->id) }}">Editar</a>
+                    </td>
+                    <td class="text-left">
+                        <form action="{{ route('entradas.destroy', $entrada->id) }}" method="POST"
+                              onsubmit="return confirm('¿Estás seguro?');">
                             @csrf
                             @method('DELETE')
-                            <input class="btn btn-danger" type="submit" name="borrar" value="Borrar"/>
+                            <input class="btn-danger" type="submit" name="borrar" value="Borrar"/>
                         </form>
                     </td>
                 </tr>
             @endforeach
             </tbody>
         </table>
-    
-        <p>
-            <a class="btn btn-primary" href="{{ route('entradas.create') }}">Nueva entrada</a>
-        </p>
-    
-    @endsection
-    ```
-    
-    ```blade
-    {{-- resources/views/entradas/show.blade.php --}}
-    
-    @extends('layouts.app')
-    
-    @section('content')
-    
-        <h1>{{ $entrada->titulo }}</h1>
-    
-        <table class="table table-bordered">
-            <tbody class="thead-light">
+
+        <div class="pt-4">
+            <a class="btn-primary" href="{{ route('entradas.create') }}">Nueva entrada</a>
+        </div>
+    </div>
+@endsection
+```
+
+```blade
+{{-- resources/views/entradas/show.blade.php --}}
+
+@extends('layouts.app')
+
+@section('content')
+
+    <h1>{{ $entrada->titulo }}</h1>
+
+    <div class="container mx-auto">
+
+        <table class="tabla-alterna border my-8">
+            <tbody>
             <tr>
                 <th>Texto</th>
                 <td>{{ $entrada->texto }}</td>
@@ -322,92 +154,143 @@ idea.max.intellisense.filesize=256000
                 <td>{{ $entrada->fecha }}</td>
             </tr>
             <tr>
-                <th>Publicada</th>
-                <td>{{ $entrada->publicada ? 'Sí' : 'No' }}</td>
+                <th>Visible</th>
+                <td>{{ $entrada->visible ? 'Sí' : 'No' }}</td>
             </tr>
             </tbody>
         </table>
-    
-        <p>
-            <a class="btn btn-primary" href="{{ route('entradas.index') }}">Volver</a>
-        </p>
-    
-    @endsection
-    ```
-    
-    ```blade
-    {{-- resources/views/entradas/create.blade.php --}}
-    
-    @extends('layouts.app')
-    
-    @section('content')
-    
-        <h1>Nueva entrada</h1>
-    
+
+        <div class="pt-4">
+            <a class="btn-secondary" href="{{ route('entradas.index') }}">Volver</a>
+        </div>
+    </div>
+@endsection
+```
+
+```blade
+{{-- resources/views/entradas/create.blade.php --}}
+
+@extends('layouts.app')
+
+@section('content')
+
+    <h1>Nueva entrada</h1>
+
+    <div class="container mx-auto my-8">
+
         <form action="{{ route('entradas.store') }}" method="POST">
             @csrf
-            <div class="form-group">
-                <label>Título: </label>
-                <input class="form-control {{ $errors->first('titulo') ? 'is-invalid' : '' }}" type="text" name="titulo"/>
-                <div class="invalid-feedback">{{ $errors->first('titulo') }}</div>
+            <div class="container grid grid-cols-2 w-1/2 gap-4">
+                <label class="text-xl font-bold">Título</label>
+                <div>
+                    <input class="rounded w-full" type="text" name="titulo"/>
+                    <span class="font-bold text-sm text-red-500">{{ $errors->first('titulo') }}</span>
+                </div>
+                <label class="text-xl font-bold">Texto</label>
+                <textarea class="rounded h-72" name="texto"></textarea>
+                <label class="text-xl font-bold">Fecha</label>
+                <input type="datetime-local" name="fecha" value="{{ now() }}"/>
+                <label class="text-xl font-bold">Visible</label>
+                <input type="checkbox" name="visible"/>
             </div>
-            <div class="form-group">
-                <label>Texto: </label>
-                <textarea class="form-control" name="texto"></textarea>
-            </div>
-            <div class="form-group">
-                <label>Fecha: </label>
-                <input class="form-control" type="datetime-local" name="fecha" value="{{ now() }}"/>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="publicada" checked/>
-                <label class="form-check-label">Publicada</label>
-            </div>
-            <div class="form-group mt-3">
-                <input class="btn btn-primary" type="submit" name="guardar" value="Guardar"/>
-                <a class="btn btn-link text-secondary" href="{{ route('entradas.index') }}">Cancelar</a>
+            <div class="pt-8">
+                <input class="btn-primary" type="submit" name="guardar" value="Guardar"/>
+                <a class="text-gray-500 ml-4" href="{{ route('entradas.index') }}">Cancelar</a>
             </div>
         </form>
-    
-    @endsection
-    ```
-    
-    ```blade
-    {{-- resources/views/entradas/edit.blade.php --}}
-    
-    @extends('layouts.app')
-    
-    @section('content')
-    
-        <h1>Editar entrada</h1>
-    
+    </div>
+@endsection
+```
+
+```blade
+{{-- resources/views/entradas/edit.blade.php --}}
+
+@extends('layouts.app')
+
+@section('content')
+
+    <h1>Editar entrada</h1>
+
+    <div class="container mx-auto my-8">
+
         <form action="{{ route('entradas.update', $entrada->id) }}" method="POST">
             @csrf
             @method('PUT')
-            <div class="form-group">
-                <label>Título: </label>
-                <input class="form-control {{ $errors->first('titulo') ? 'is-invalid' : '' }}" type="text" name="titulo"
-                    value="{{ $entrada->titulo }}"/>
-                <div class="invalid-feedback">{{ $errors->first('titulo') }}</div>
+            <div class="container grid grid-cols-2 w-1/2 gap-4">
+                <label class="text-xl font-bold">Título</label>
+                <div>
+                    <input class="rounded w-full" type="text" name="titulo" value="{{ $entrada->titulo }}"/>
+                    <span class="font-bold text-sm text-red-500">{{ $errors->first('titulo') }}</span>
+                </div>
+                <label class="text-xl font-bold">Texto</label>
+                <textarea class="rounded h-72" name="texto">{{ $entrada->texto }}</textarea>
+                <label class="text-xl font-bold">Fecha</label>
+                <input type="datetime-local" name="fecha" value="{{ $entrada->fecha ?: now() }}"/>
+                <label class="text-xl font-bold">Visible</label>
+                <input type="checkbox" name="visible" {{ $entrada->visible ? 'checked' : '' }} />
             </div>
-            <div class="form-group">
-                <label>Texto: </label>
-                <textarea class="form-control" name="texto">{{ $entrada->texto }}</textarea>
-            </div>
-            <div class="form-group">
-                <label>Fecha: </label>
-                <input class="form-control" type="datetime-local" name="fecha" value="{{ $entrada->fecha ?: now() }}"/>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox"
-                    name="publicada" {{ $entrada->publicada ? 'checked' : '' }}/>
-                <label class="form-check-label">Publicada</label>
-            </div>
-            <div class="form-group mt-3">
-                <input class="btn btn-primary" type="submit" name="guardar" value="Guardar"/>
-                <a class="btn btn-link text-secondary" href="{{ route('entradas.index') }}">Cancelar</a>
+            <div class="pt-8">
+                <input class="btn-primary" type="submit" name="guardar" value="Guardar"/>
+                <a class="text-gray-500 ml-4" href="{{ route('entradas.index') }}">Cancelar</a>
             </div>
         </form>
-    
-    @endsection
-    ```
+    </div>
+@endsection
+```
+
+## CSS
+
+```css
+/* resources/css/app.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* REF: https://tailwindcss.com/docs/adding-base-styles */
+@layer base {
+    h1 {
+        @apply text-6xl p-8 bg-blue-500 text-white;
+    }
+
+    th {
+        @apply bg-gray-200 text-left text-xl;
+    }
+
+    td, th {
+        @apply p-2;
+    }
+
+    a {
+        @apply text-blue-500 hover:underline;
+    }
+}
+
+/* REF: https://tailwindcss.com/docs/extracting-components#extracting-component-classes-with-apply */
+/* REF: REF: https://tailwindcomponents.com/component/button-component */
+@layer components {
+    .btn-primary {
+        @apply inline-block focus:outline-none text-white text-sm py-2.5 px-5 rounded-md bg-blue-500 hover:bg-blue-600 hover:shadow-lg hover:no-underline;
+    }
+
+    .btn-secondary {
+        @apply inline-block focus:outline-none text-white text-sm py-2.5 px-5 rounded-md bg-gray-500 hover:bg-gray-600 hover:shadow-lg hover:no-underline;
+    }
+
+    .btn-danger {
+        @apply inline-block focus:outline-none text-white text-sm py-2.5 px-5 rounded-md bg-red-500 hover:bg-red-600 hover:shadow-lg hover:no-underline;
+    }
+
+    .tabla-alterna > tbody > tr:nth-of-type(even) {
+        @apply bg-gray-100;
+    }
+
+    .tabla-hover > tbody > tr {
+        @apply hover:bg-gray-100;
+    }
+}
+```
+
+## Plugin para dar aspecto a los formularios
+
+Instalar el plugin [siguiendo las instrucciones](https://github.com/tailwindlabs/tailwindcss-forms).
