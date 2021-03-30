@@ -3,6 +3,7 @@
 ## Instalar Tailwind en el proyecto Laravel
 
 > :book: [Install Tailwind CSS with Laravel](https://tailwindcss.com/docs/guides/laravel)
+> :book: [Compiling Assets (Mix)](https://laravel.com/docs/8.x/mix)
 
 ```javascript
 // tailwind.config.js
