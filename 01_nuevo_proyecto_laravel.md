@@ -8,7 +8,7 @@ Descargar, instalar y arrancar [Dockerbox](https://github.com/ijaureguialzo/dock
 
 > :warning: Reemplazar `mi_aplicacion` por el nombre del proyecto a partir de aquí.
 
-### Generar un proyecto nuevo en la carpeta `www`
+### Generar un proyecto nuevo en la carpeta `sites`
 
 1. Abrir un terminal en la carpeta `dockerbox` y entrar en el workspace:
 
@@ -40,45 +40,25 @@ Descargar, instalar y arrancar [Dockerbox](https://github.com/ijaureguialzo/dock
 5. (Opcional) Poner el proyecto bajo control de versiones:
 
     ```bash
-    cd www/mi_aplicacion && git init && git add . && git commit -m "Initial commit" && cd ../..
+    cd sites/mi_aplicacion && git init && git add . && git commit -m "Initial commit" && cd ../..
     ```
 
 ### Añadir el nuevo sitio web a Dockerbox
 
-1. Ir a la carpeta `dockerbox/nginx` y duplicar el fichero `dockerbox.conf` a `mi_aplicacion.conf`.
-
-2. Editar el fichero `mi_aplicacion.conf` y modificar las líneas siguientes para que coincidan con el nuevo sitio:
-
-   ```text
-   server_name mi_aplicacion.dockerbox.test;
-   ```
-
-   ```text
-   root /var/www/html/mi_aplicacion/public;
-   ```
-
-3. Editar el fichero `docker-compose.yml` y añadir una línea a la configuración de `https-portal`:
-
-   ```yml
-   mi_aplicacion.dockerbox.test -> http://nginx:80
-   ```
-
-   > :warning: Recuerda añadir una coma en la línea anterior a la nueva para que la sintaxis del fichero YAML siga siendo correcta.
-
-4. Editar como root el fichero `/etc/hosts` (en macOS y Linux) o
+1. Editar como root el fichero `/etc/hosts` (en macOS y Linux) o
    en [Windows](https://www.adslzone.net/esenciales/windows-10/editar-archivo-host/) y añadir una nueva línea:
 
    ```text
    127.0.0.1    mi_aplicacion.dockerbox.test
    ```
 
-5. Reiniciar los contenedores:
+2. Reiniciar los contenedores:
 
     ```bash
     make restart
     ```
 
-6. Acceder al [nuevo sitio](https://mi_aplicacion.dockerbox.test).
+3. Acceder al [nuevo sitio](https://mi_aplicacion.dockerbox.test).
 
 ## Crear la base de datos
 
@@ -102,7 +82,7 @@ Editar el `.env` de la aplicación y establecer estas dos variables:
 
 ```dotenv
 IGNITION_REMOTE_SITES_PATH=/var/www/html/mi_aplicacion/
-IGNITION_LOCAL_SITES_PATH=/Users/.../dockerbox/www/mi_aplicacion/
+IGNITION_LOCAL_SITES_PATH=/Users/.../dockerbox/sites/mi_aplicacion/
 ```
 
 Las dos rutas tienen que apuntar a la carpeta raiz del proyecto Laravel, la primera dentro del workspace y la segunda en
