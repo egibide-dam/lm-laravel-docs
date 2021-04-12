@@ -11,6 +11,8 @@
 Activar la verificación:
 
 ```php
+// app/Models/User.php
+
 class User extends Authenticatable implements MustVerifyEmail
 ```
 
@@ -19,10 +21,12 @@ class User extends Authenticatable implements MustVerifyEmail
 Problema con el proxy inverso:
 
 ```php
-    protected $proxies = '*';
+// app/Http/Middleware/TrustProxies.php
+
+protected $proxies = '*';
 ```
 
-Configurar el servidor de correo saliente:
+Configurar el servidor de correo saliente en el fichero `.env`:
 
 ```dotenv
 MAIL_DRIVER=smtp
@@ -35,9 +39,21 @@ MAIL_FROM_ADDRESS=noreply@dockerbox.test
 MAIL_FROM_NAME="${APP_NAME}"
 ```
 
+Exigir que la cuenta esté verificada en alguna ruta:
+
+```php
+// routes/web.php
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+```
+
 ## Agrupar rutas
 
 ```php
+// routes/web.php
+
 // Sesión iniciada y cuenta verificada
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('entradas', EntradaController::class);
