@@ -19,7 +19,7 @@ Descargar, instalar y arrancar [Dockerbox](https://github.com/ijaureguialzo/dock
 2. Crear el proyecto:
 
     ```bash
-    composer create-project --prefer-dist laravel/laravel mi_aplicacion
+    composer create-project laravel/laravel mi_aplicacion
     ```
 
 3. Salir del `workspace`:
