@@ -45,7 +45,8 @@ Descargar, instalar y arrancar [Dockerbox](https://github.com/ijaureguialzo/dock
 
 ### Añadir el nuevo sitio web a Dockerbox
 
-1. Editar como root el fichero `/etc/hosts` (en macOS y Linux) o
+1. [Redirigir los dominios .test a localhost](https://github.com/ijaureguialzo/automatic-test-domains). Si no es
+   posible, editar como root el fichero `/etc/hosts` (en macOS y Linux) o
    en [Windows](https://www.adslzone.net/esenciales/windows-10/editar-archivo-host/) y añadir una nueva línea:
 
    ```text
