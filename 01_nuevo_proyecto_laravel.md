@@ -53,10 +53,10 @@ Descargar, instalar y arrancar [Dockerbox](https://github.com/ijaureguialzo/dock
    127.0.0.1    mi_aplicacion.dockerbox.test
    ```
 
-2. Reiniciar los contenedores:
+2. Recargar los sitios web disponibles:
 
     ```bash
-    make restart
+    make reload
     ```
 
 3. Acceder al [nuevo sitio](https://mi_aplicacion.dockerbox.test).
