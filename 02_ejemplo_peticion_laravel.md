@@ -94,14 +94,17 @@
     
     @section('content')
     
-        <h1>Entradas</h1>
+        <h1 class="mt-3">Entradas</h1>
     
-        <table border="1">
+        <table class="table table-striped">
+            <thead>
             <tr>
                 <th>Título</th>
                 <th>Texto</th>
                 <th>Fecha</th>
             </tr>
+            </thead>
+            <tbody>
             @foreach($entradas as $entrada)
                 <tr>
                     <td>{{ $entrada->titulo }}</td>
@@ -109,8 +112,8 @@
                     <td>{{ $entrada->fecha }}</td>
                 </tr>
             @endforeach
+            </tbody>
         </table>
-    
     @endsection
     ```
 
@@ -124,13 +127,17 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-    
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+              integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <title>Mi blog</title>
     </head>
     <body>
-    
-    @yield('content')
-    
+    <div class="container">
+        @yield('content')
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
     </body>
     </html>
     ```
