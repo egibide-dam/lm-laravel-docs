@@ -60,6 +60,16 @@
     $entrada->save();
     ```
 
+    ```php
+    $entrada = new Entrada();
+    $entrada->titulo = 'Segunda entrada';
+    $entrada->texto = 'Esta es la segunda entrada del blog.';
+    $entrada->fecha = now();
+    $entrada->save();
+    ```
+
+   > Para salir de Tinker pulsa Ctrl+D.
+
 6. Rutas:
 
     ```php
@@ -71,6 +81,8 @@
     ```bash
     php artisan route:list
     ```
+
+   > Recuerda importar la clase EntradaController para que funcione correctamente.
 
 7. Acción en el controlador:
 
@@ -117,7 +129,7 @@
     @endsection
     ```
 
-8. Layout general de la página:
+9. Layout general de la página:
 
     ```blade
     {{-- resources/views/layouts/app.blade.php --}}
