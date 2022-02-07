@@ -438,13 +438,17 @@ class EntradaController extends Controller
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <title>Mi blog</title>
 </head>
 <body>
-
-@yield('content')
-
+<div class="container">
+    @yield('content')
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
 </body>
 </html>
 ```
@@ -458,9 +462,9 @@ class EntradaController extends Controller
 
 @section('content')
 
-    <h1>Entradas</h1>
+    <h1 class="mt-3">Entradas</h1>
 
-    <table border="1">
+    <table class="table table-striped">
         <thead>
         <tr>
             <th>Título</th>
@@ -469,29 +473,28 @@ class EntradaController extends Controller
             <th colspan="2">Acciones</th>
         </tr>
         </thead>
-        <tbody>
+        <tbody class="align-middle">
         @foreach($entradas as $entrada)
             <tr>
                 <td><a href="{{ route('entradas.show', $entrada->id) }}">{{ $entrada->titulo }}</a></td>
                 <td>{{ $entrada->fecha }}</td>
                 <td>{{ $entrada->visible ? 'Sí' : 'No' }}</td>
-                <td><a href="{{ route('entradas.edit', $entrada->id) }}">Editar</a></td>
+                <td><a class="btn btn-secondary" href="{{ route('entradas.edit', $entrada->id) }}">Editar</a></td>
                 <td>
                     <form action="{{ route('entradas.destroy', $entrada->id) }}" method="POST"
                           onsubmit="return confirm('¿Estás seguro?');">
                         @csrf
                         @method('DELETE')
-                        <input type="submit" name="borrar" value="Borrar"/>
+                        <input class="btn btn-danger" type="submit" name="borrar" value="Borrar"/>
                     </form>
                 </td>
             </tr>
         @endforeach
         </tbody>
+        <tfoot></tfoot>
     </table>
 
-    <p>
-        <a href="{{ route('entradas.create') }}">Nueva entrada</a>
-    </p>
+    <a class="btn btn-primary mt-3" href="{{ route('entradas.create') }}">Nueva entrada</a>
 
 @endsection
 ```
@@ -503,10 +506,10 @@ class EntradaController extends Controller
 
 @section('content')
 
-    <h1>{{ $entrada->titulo }}</h1>
+    <h1 class="mt-3">{{ $entrada->titulo }}</h1>
 
-    <table border="1">
-        <tbody>
+    <table class="table table-striped">
+        <tbody class="align-middle">
         <tr>
             <th>Texto</th>
             <td>{{ $entrada->texto }}</td>
@@ -522,9 +525,7 @@ class EntradaController extends Controller
         </tbody>
     </table>
 
-    <p>
-        <a href="{{ route('entradas.index') }}">Volver</a>
-    </p>
+    <a class="btn btn-secondary mt-3" href="{{ route('entradas.index') }}">Volver</a>
 
 @endsection
 ```
@@ -536,33 +537,38 @@ class EntradaController extends Controller
 
 @section('content')
 
-    <h1>Nueva entrada</h1>
+    <h1 class="mt-3">Nueva entrada</h1>
 
     <form action="{{ route('entradas.store') }}" method="POST">
         @csrf
-        <div>
-            <label>Título: </label>
-            <input type="text" name="titulo"/>
-            <span>{{ $errors->first('titulo') }}</span>
+        <div class="row mb-3">
+            <label class="col-2 form-label">Título: </label>
+            <div class="col-10">
+                <input class="form-control" type="text" name="titulo"/>
+                <span class="text-danger">{{ $errors->first('titulo') }}</span>
+            </div>
         </div>
-        <div>
-            <label>Texto: </label>
-            <textarea name="texto"></textarea>
+        <div class="row mb-3">
+            <label class="col-2 form-label">Texto: </label>
+            <div class="col-10">
+                <textarea class="form-control" name="texto"></textarea>
+            </div>
         </div>
-        <div>
-            <label>Fecha: </label>
-            <input type="datetime-local" name="fecha" value="{{ now() }}"/>
+        <div class="row mb-3">
+            <label class="col-2 form-label">Fecha: </label>
+            <div class="col-10">
+                <input class="form-control" type="datetime-local" name="fecha" value="{{ now() }}"/>
+            </div>
         </div>
-        <div>
-            <label>Visible: </label>
-            <input type="checkbox" name="visible" checked/>
+        <div class="row mb-3">
+            <label class="col-2 form-label">Visible: </label>
+            <div class="col-10">
+                <input class="form-check-input" type="checkbox" name="visible" checked/>
+            </div>
         </div>
-        <input type="submit" name="guardar" value="Guardar"/>
+        <input class="btn btn-primary" type="submit" name="guardar" value="Guardar"/>
+        <a class="link-secondary ms-2" href="{{ route('entradas.index') }}">Cancelar</a>
     </form>
-
-    <p>
-        <a href="{{ route('entradas.index') }}">Cancelar</a>
-    </p>
 
 @endsection
 ```
@@ -574,34 +580,40 @@ class EntradaController extends Controller
 
 @section('content')
 
-    <h1>Editar entrada</h1>
+    <h1 class="mt-3">Editar entrada</h1>
 
     <form action="{{ route('entradas.update', $entrada->id) }}" method="POST">
         @csrf
         @method('PUT')
-        <div>
-            <label>Título: </label>
-            <input type="text" name="titulo" value="{{ $entrada->titulo }}"/>
-            <span>{{ $errors->first('titulo') }}</span>
+        <div class="row mb-3">
+            <label class="col-2 form-label">Título: </label>
+            <div class="col-10">
+                <input class="form-control" type="text" name="titulo" value="{{ $entrada->titulo }}"/>
+                <span class="text-danger">{{ $errors->first('titulo') }}</span>
+            </div>
         </div>
-        <div>
-            <label>Texto: </label>
-            <textarea name="texto">{{ $entrada->texto }}</textarea>
+        <div class="row mb-3">
+            <label class="col-2 form-label">Texto: </label>
+            <div class="col-10">
+                <textarea class="form-control" name="texto">{{ $entrada->texto }}</textarea>
+            </div>
         </div>
-        <div>
-            <label>Fecha: </label>
-            <input type="datetime-local" name="fecha" value="{{ $entrada->fecha ?: now() }}"/>
+        <div class="row mb-3">
+            <label class="col-2 form-label">Fecha: </label>
+            <div class="col-10">
+                <input class="form-control" type="datetime-local" name="fecha" value="{{ $entrada->fecha ?: now() }}"/>
+            </div>
         </div>
-        <div>
-            <label>Visible: </label>
-            <input type="checkbox" name="visible" {{ $entrada->visible ? 'checked' : '' }} />
+        <div class="row mb-3">
+            <label class="col-2 form-label">Visible: </label>
+            <div class="col-10">
+                <input class="form-check-input" type="checkbox"
+                       name="visible" {{ $entrada->visible ? 'checked' : '' }}/>
+            </div>
         </div>
-        <input type="submit" name="guardar" value="Guardar"/>
+        <input class="btn btn-primary" type="submit" name="guardar" value="Guardar"/>
+        <a class="link-secondary ms-2" href="{{ route('entradas.index') }}">Cancelar</a>
     </form>
-
-    <p>
-        <a href="{{ route('entradas.index') }}">Cancelar</a>
-    </p>
 
 @endsection
 ```
