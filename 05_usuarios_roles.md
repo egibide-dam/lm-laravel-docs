@@ -12,6 +12,8 @@ composer create-project laravel/laravel usuarios_roles
 
 ## Instalar los paquetes necesarios
 
+> :book: [Laravel-permission](https://spatie.be/docs/laravel-permission/v5/introduction)
+
 ```shell
 composer require spatie/laravel-permission
 ```
