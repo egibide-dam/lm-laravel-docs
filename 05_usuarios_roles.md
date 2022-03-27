@@ -1283,6 +1283,8 @@ class User extends Authenticatable implements MustVerifyEmail
 Activar las rutas de verificación:
 
 ```php
+// routes/web.php
+
 Auth::routes(['verify' => true]);
 ```
 
@@ -1301,6 +1303,8 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
 Configurar el servidor de correo saliente en el fichero `.env`:
 
 ```dotenv
+# .env
+
 MAIL_DRIVER=smtp
 MAIL_HOST=mailcatcher
 MAIL_PORT=1025
