@@ -8,7 +8,7 @@
 composer create-project laravel/laravel usuarios_roles
 ```
 
-> Configurar el `AppServiceProvider` para que genere direcciones HTTPS y crear el usuario de base de datos para el proyecto.
+> [Configurar el `AppServiceProvider` para que genere direcciones HTTPS](https://github.com/egibide-dam/lm-laravel-docs/blob/master/01_nuevo_proyecto_laravel.md#generar-un-proyecto-nuevo-en-la-carpeta-sites) y crear el usuario de base de datos para el proyecto.
 
 ## Instalar los paquetes necesarios
 
