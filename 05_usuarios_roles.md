@@ -458,7 +458,7 @@ class ProductoController extends Controller
 </head>
 <body>
 <div id="app">
-    <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="{{ url('/') }}">
                 {{ config('app.name', 'Laravel') }}
@@ -529,6 +529,20 @@ class ProductoController extends Controller
 </html>
 ```
 
+### Inicio
+
+```blade
+{{-- resources/views/welcome.blade.php --}}
+
+@extends('layouts.app')
+
+@section('content')
+    <div class="row">
+        <p>Bienvenidos a esta aplicación de ejemplo.</p>
+    </div>
+@endsection
+```
+
 ### User
 
 ```blade
@@ -537,16 +551,14 @@ class ProductoController extends Controller
 @extends('layouts.app')
 
 @section('content')
-    <div class="row">
-        <div class="col-lg-12 margin-tb">
-            <div class="pull-left">
-                <h2>Users Management</h2>
-            </div>
-            <div class="pull-right">
-                <a class="btn btn-success" href="{{ route('users.create') }}"> Create New User</a>
-            </div>
+
+    <h1>User management</h1>
+
+    @can('user-create')
+        <div class="my-3">
+            <a class="btn btn-primary" href="{{ route('users.create') }}">Create new user</a>
         </div>
-    </div>
+    @endcan
 
     @if ($message = Session::get('success'))
         <div class="alert alert-success">
@@ -554,33 +566,48 @@ class ProductoController extends Controller
         </div>
     @endif
 
-    <table class="table table-bordered">
+    <table class="table table-striped">
+        <thead>
         <tr>
-            <th>No</th>
+            <th>#</th>
             <th>Name</th>
             <th>Email</th>
             <th>Roles</th>
-            <th width="280px">Action</th>
+            <th>Action</th>
         </tr>
+        </thead>
+        <tbody class="align-middle">
         @foreach ($data as $key => $user)
             <tr>
-                <td>{{ ++$loop->index }}</td>
+                <td>{{ $user->id }}</td>
                 <td>{{ $user->name }}</td>
                 <td>{{ $user->email }}</td>
                 <td>
                     @if(!empty($user->getRoleNames()))
                         @foreach($user->getRoleNames() as $v)
-                            <label class="badge badge-success">{{ $v }}</label>
+                            <span class="badge bg-primary">{{ $v }}</span>
                         @endforeach
                     @endif
                 </td>
                 <td>
-                    <a class="btn btn-info" href="{{ route('users.show',$user->id) }}">Show</a>
-                    <a class="btn btn-primary" href="{{ route('users.edit',$user->id) }}">Edit</a>
-                    <a class="btn btn-success" href="{{ route('users.destroy',$user->id) }}"> Delete</a>
+                    <a class="btn btn-success" href="{{ route('users.show',$user->id) }}">Show</a>
+                    @can('user-edit')
+                        <a class="btn btn-secondary" href="{{ route('users.edit',$user->id) }}">Edit</a>
+                    @endcan
+                    @can('user-delete')
+                        {!! Form::open(['method' => 'DELETE','route' => ['users.destroy', $user->id],'style'=>'display:inline']) !!}
+                        {!! Form::submit('Delete', ['class' => 'btn btn-danger', 'onclick' => 'return confirm("Are you sure?")']) !!}
+                        {!! Form::close() !!}
+                    @endcan
                 </td>
             </tr>
         @endforeach
+        </tbody>
+        <tfoot>
+        <tr>
+            <th colspan="5" class="border-0">Total: {{ $data->count() }}</th>
+        </tr>
+        </tfoot>
     </table>
 @endsection
 ```
@@ -591,16 +618,8 @@ class ProductoController extends Controller
 @extends('layouts.app')
 
 @section('content')
-    <div class="row">
-        <div class="col-lg-12 margin-tb">
-            <div class="pull-left">
-                <h2>Create New User</h2>
-            </div>
-            <div class="pull-right">
-                <a class="btn btn-primary" href="{{ route('users.index') }}"> Back</a>
-            </div>
-        </div>
-    </div>
+
+    <h1>Create new user</h1>
 
     @if (count($errors) > 0)
         <div class="alert alert-danger">
@@ -615,38 +634,39 @@ class ProductoController extends Controller
 
     {!! Form::open(array('route' => 'users.store','method'=>'POST')) !!}
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="col-12 mb-3">
             <div class="form-group">
                 <strong>Name:</strong>
                 {!! Form::text('name', null, array('placeholder' => 'Name','class' => 'form-control')) !!}
             </div>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="col-12 mb-3">
             <div class="form-group">
                 <strong>Email:</strong>
                 {!! Form::text('email', null, array('placeholder' => 'Email','class' => 'form-control')) !!}
             </div>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="col-12 mb-3">
             <div class="form-group">
                 <strong>Password:</strong>
                 {!! Form::password('password', array('placeholder' => 'Password','class' => 'form-control')) !!}
             </div>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="col-12 mb-3">
             <div class="form-group">
-                <strong>Confirm Password:</strong>
+                <strong>Confirm password:</strong>
                 {!! Form::password('confirm-password', array('placeholder' => 'Confirm Password','class' => 'form-control')) !!}
             </div>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="col-12 mb-3">
             <div class="form-group">
                 <strong>Role:</strong>
                 {!! Form::select('roles[]', $roles,[], array('class' => 'form-control','multiple')) !!}
             </div>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-12 text-center">
+        <div class="col-12 mb-3">
             <button type="submit" class="btn btn-primary">Submit</button>
+            <a class="link-secondary ms-2" href="{{ route('users.index') }}">Cancel</a>
         </div>
     </div>
     {!! Form::close() !!}
@@ -659,16 +679,8 @@ class ProductoController extends Controller
 @extends('layouts.app')
 
 @section('content')
-    <div class="row">
-        <div class="col-lg-12 margin-tb">
-            <div class="pull-left">
-                <h2>Edit New User</h2>
-            </div>
-            <div class="pull-right">
-                <a class="btn btn-primary" href="{{ route('users.index') }}"> Back</a>
-            </div>
-        </div>
-    </div>
+
+    <h1>Edit user</h1>
 
     @if (count($errors) > 0)
         <div class="alert alert-danger">
@@ -683,38 +695,39 @@ class ProductoController extends Controller
 
     {!! Form::model($user, ['method' => 'PATCH','route' => ['users.update', $user->id]]) !!}
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="col-12 mb-3">
             <div class="form-group">
                 <strong>Name:</strong>
                 {!! Form::text('name', null, array('placeholder' => 'Name','class' => 'form-control')) !!}
             </div>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="col-12 mb-3">
             <div class="form-group">
                 <strong>Email:</strong>
                 {!! Form::text('email', null, array('placeholder' => 'Email','class' => 'form-control')) !!}
             </div>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="col-12 mb-3">
             <div class="form-group">
                 <strong>Password:</strong>
                 {!! Form::password('password', array('placeholder' => 'Password','class' => 'form-control')) !!}
             </div>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="col-12 mb-3">
             <div class="form-group">
-                <strong>Confirm Password:</strong>
+                <strong>Confirm password:</strong>
                 {!! Form::password('confirm-password', array('placeholder' => 'Confirm Password','class' => 'form-control')) !!}
             </div>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="col-12 mb-3">
             <div class="form-group">
                 <strong>Role:</strong>
                 {!! Form::select('roles[]', $roles,$userRole, array('class' => 'form-control','multiple')) !!}
             </div>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-12 text-center">
+        <div class="col-12 mb-3">
             <button type="submit" class="btn btn-primary">Submit</button>
+            <a class="link-secondary ms-2" href="{{ route('users.index') }}">Cancel</a>
         </div>
     </div>
     {!! Form::close() !!}
@@ -727,41 +740,35 @@ class ProductoController extends Controller
 @extends('layouts.app')
 
 @section('content')
-    <div class="row">
-        <div class="col-lg-12 margin-tb">
-            <div class="pull-left">
-                <h2> Show User</h2>
-            </div>
-            <div class="pull-right">
-                <a class="btn btn-primary" href="{{ route('users.index') }}"> Back</a>
-            </div>
-        </div>
-    </div>
+
+    <h1>Show user</h1>
 
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="col-12 mb-3">
             <div class="form-group">
                 <strong>Name:</strong>
                 {{ $user->name }}
             </div>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="col-12 mb-3">
             <div class="form-group">
                 <strong>Email:</strong>
                 {{ $user->email }}
             </div>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="col-12 mb-3">
             <div class="form-group">
                 <strong>Roles:</strong>
                 @if(!empty($user->getRoleNames()))
                     @foreach($user->getRoleNames() as $v)
-                        <label class="badge badge-success">{{ $v }}</label>
+                        <span class="badge bg-primary">{{ $v }}</span>
                     @endforeach
                 @endif
             </div>
         </div>
     </div>
+
+    <a class="btn btn-secondary" href="{{ route('users.index') }}">Back</a>
 @endsection
 ```
 
@@ -773,18 +780,14 @@ class ProductoController extends Controller
 @extends('layouts.app')
 
 @section('content')
-    <div class="row">
-        <div class="col-lg-12 margin-tb">
-            <div class="pull-left">
-                <h2>Role Management</h2>
-            </div>
-            <div class="pull-right">
-                @can('role-create')
-                    <a class="btn btn-success" href="{{ route('roles.create') }}"> Create New Role</a>
-                @endcan
-            </div>
+
+    <h1>Role management</h1>
+
+    @can('role-create')
+        <div class="my-3">
+            <a class="btn btn-primary" href="{{ route('roles.create') }}">Create new role</a>
         </div>
-    </div>
+    @endcan
 
     @if ($message = Session::get('success'))
         <div class="alert alert-success">
@@ -792,32 +795,41 @@ class ProductoController extends Controller
         </div>
     @endif
 
-    <table class="table table-bordered">
+    <table class="table table-striped">
+        <thead>
         <tr>
-            <th>No</th>
+            <th>#</th>
             <th>Name</th>
-            <th width="280px">Action</th>
+            <th>Permissions</th>
+            <th>Action</th>
         </tr>
+        </thead>
+        <tbody class="align-middle">
         @foreach ($roles as $key => $role)
             <tr>
-                <td>{{ ++$loop->index }}</td>
+                <td>{{ $role->id }}</td>
                 <td>{{ $role->name }}</td>
+                <td>{{ $role->permissions()->count() }}</td>
                 <td>
-                    <a class="btn btn-info" href="{{ route('roles.show',$role->id) }}">Show</a>
+                    <a class="btn btn-success" href="{{ route('roles.show',$role->id) }}">Show</a>
                     @can('role-edit')
-                        <a class="btn btn-primary" href="{{ route('roles.edit',$role->id) }}">Edit</a>
+                        <a class="btn btn-secondary" href="{{ route('roles.edit',$role->id) }}">Edit</a>
                     @endcan
                     @can('role-delete')
                         {!! Form::open(['method' => 'DELETE','route' => ['roles.destroy', $role->id],'style'=>'display:inline']) !!}
-                        {!! Form::submit('Delete', ['class' => 'btn btn-danger']) !!}
+                        {!! Form::submit('Delete', ['class' => 'btn btn-danger', 'onclick' => 'return confirm("Are you sure?")']) !!}
                         {!! Form::close() !!}
                     @endcan
                 </td>
             </tr>
         @endforeach
+        </tbody>
+        <tfoot>
+        <tr>
+            <th colspan="3" class="border-0">Total: {{ $roles->count() }}</th>
+        </tr>
+        </tfoot>
     </table>
-
-    {!! $roles->render() !!}
 @endsection
 ```
 
@@ -827,16 +839,8 @@ class ProductoController extends Controller
 @extends('layouts.app')
 
 @section('content')
-    <div class="row">
-        <div class="col-lg-12 margin-tb">
-            <div class="pull-left">
-                <h2>Create New Role</h2>
-            </div>
-            <div class="pull-right">
-                <a class="btn btn-primary" href="{{ route('roles.index') }}"> Back</a>
-            </div>
-        </div>
-    </div>
+
+    <h1>Create new role</h1>
 
     @if (count($errors) > 0)
         <div class="alert alert-danger">
@@ -851,13 +855,13 @@ class ProductoController extends Controller
 
     {!! Form::open(array('route' => 'roles.store','method'=>'POST')) !!}
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="col-12 mb-3">
             <div class="form-group">
                 <strong>Name:</strong>
                 {!! Form::text('name', null, array('placeholder' => 'Name','class' => 'form-control')) !!}
             </div>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="col-12 mb-3">
             <div class="form-group">
                 <strong>Permission:</strong>
                 <br/>
@@ -868,8 +872,9 @@ class ProductoController extends Controller
                 @endforeach
             </div>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-12 text-center">
+        <div class="col-12 mb-3">
             <button type="submit" class="btn btn-primary">Submit</button>
+            <a class="link-secondary ms-2" href="{{ route('roles.index') }}">Cancel</a>
         </div>
     </div>
     {!! Form::close() !!}
@@ -882,16 +887,8 @@ class ProductoController extends Controller
 @extends('layouts.app')
 
 @section('content')
-    <div class="row">
-        <div class="col-lg-12 margin-tb">
-            <div class="pull-left">
-                <h2>Edit Role</h2>
-            </div>
-            <div class="pull-right">
-                <a class="btn btn-primary" href="{{ route('roles.index') }}"> Back</a>
-            </div>
-        </div>
-    </div>
+
+    <h1>Edit role</h1>
 
     @if (count($errors) > 0)
         <div class="alert alert-danger">
@@ -906,15 +903,15 @@ class ProductoController extends Controller
 
     {!! Form::model($role, ['method' => 'PATCH','route' => ['roles.update', $role->id]]) !!}
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="col-12 mb-3">
             <div class="form-group">
                 <strong>Name:</strong>
                 {!! Form::text('name', null, array('placeholder' => 'Name','class' => 'form-control')) !!}
             </div>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="col-12 mb-3">
             <div class="form-group">
-                <strong>Permission:</strong>
+                <strong>Permissions:</strong>
                 <br/>
                 @foreach($permission as $value)
                     <label>{{ Form::checkbox('permission[]', $value->id, in_array($value->id, $rolePermissions) ? true : false, array('class' => 'name')) }}
@@ -923,8 +920,9 @@ class ProductoController extends Controller
                 @endforeach
             </div>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-12 text-center">
+        <div class="col-12 mb-3">
             <button type="submit" class="btn btn-primary">Submit</button>
+            <a class="link-secondary ms-2" href="{{ route('roles.index') }}">Cancel</a>
         </div>
     </div>
     {!! Form::close() !!}
@@ -937,35 +935,29 @@ class ProductoController extends Controller
 @extends('layouts.app')
 
 @section('content')
-    <div class="row">
-        <div class="col-lg-12 margin-tb">
-            <div class="pull-left">
-                <h2> Show Role</h2>
-            </div>
-            <div class="pull-right">
-                <a class="btn btn-primary" href="{{ route('roles.index') }}"> Back</a>
-            </div>
-        </div>
-    </div>
+
+    <h1>Show role</h1>
 
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="col-12 mb-3">
             <div class="form-group">
                 <strong>Name:</strong>
                 {{ $role->name }}
             </div>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="col-12 mb-3">
             <div class="form-group">
                 <strong>Permissions:</strong>
                 @if(!empty($rolePermissions))
                     @foreach($rolePermissions as $v)
-                        <label class="label label-success">{{ $v->name }},</label>
+                        <span class="badge bg-primary">{{ $v->name }}</span>
                     @endforeach
                 @endif
             </div>
         </div>
     </div>
+
+    <a class="btn btn-secondary" href="{{ route('roles.index') }}">Back</a>
 @endsection
 ```
 
@@ -977,18 +969,14 @@ class ProductoController extends Controller
 @extends('layouts.app')
 
 @section('content')
-    <div class="row">
-        <div class="col-lg-12 margin-tb">
-            <div class="pull-left">
-                <h2>Productos</h2>
-            </div>
-            <div class="pull-right">
-                @can('producto-create')
-                    <a class="btn btn-success" href="{{ route('productos.create') }}"> Create New Producto</a>
-                @endcan
-            </div>
+
+    <h1>Product management</h1>
+
+    @can('producto-create')
+        <div class="my-3">
+            <a class="btn btn-primary" href="{{ route('productos.create') }}">Create new product</a>
         </div>
-    </div>
+    @endcan
 
     @if ($message = Session::get('success'))
         <div class="alert alert-success">
@@ -996,33 +984,44 @@ class ProductoController extends Controller
         </div>
     @endif
 
-    <table class="table table-bordered">
+    <table class="table table-striped">
+        <thead>
         <tr>
-            <th>No</th>
+            <th>#</th>
             <th>Name</th>
             <th>Details</th>
-            <th width="280px">Action</th>
+            <th>Action</th>
         </tr>
-        @foreach ($productos as $producto)
+        </thead>
+        <tbody class="align-middle">
+        @forelse($productos as $producto)
             <tr>
-                <td>{{ ++$loop->index }}</td>
+                <td>{{ $producto->id }}</td>
                 <td>{{ $producto->nombre }}</td>
                 <td>{{ $producto->detalle }}</td>
                 <td>
-                    <form action="{{ route('productos.destroy',$producto->id) }}" method="POST">
-                        <a class="btn btn-info" href="{{ route('productos.show',$producto->id) }}">Show</a>
-                        @can('producto-edit')
-                            <a class="btn btn-primary" href="{{ route('productos.edit',$producto->id) }}">Edit</a>
-                        @endcan
-                        @csrf
-                        @method('DELETE')
-                        @can('producto-delete')
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        @endcan
-                    </form>
+                    <a class="btn btn-success" href="{{ route('productos.show',$producto->id) }}">Show</a>
+                    @can('producto-edit')
+                        <a class="btn btn-secondary" href="{{ route('productos.edit',$producto->id) }}">Edit</a>
+                    @endcan
+                    @can('producto-delete')
+                        {!! Form::open(['method' => 'DELETE','route' => ['productos.destroy', $producto->id],'style'=>'display:inline']) !!}
+                        {!! Form::submit('Delete', ['class' => 'btn btn-danger', 'onclick' => 'return confirm("Are you sure?")']) !!}
+                        {!! Form::close() !!}
+                    @endcan
                 </td>
             </tr>
-        @endforeach
+        @empty
+            <tr>
+                <td colspan="4">No data found.</td>
+            </tr>
+        @endforelse
+        </tbody>
+        <tfoot>
+        <tr>
+            <th colspan="4" class="border-0">Total: {{ $productos->count() }}</th>
+        </tr>
+        </tfoot>
     </table>
 @endsection
 ```
@@ -1033,16 +1032,8 @@ class ProductoController extends Controller
 @extends('layouts.app')
 
 @section('content')
-    <div class="row">
-        <div class="col-lg-12 margin-tb">
-            <div class="pull-left">
-                <h2>Add New Product</h2>
-            </div>
-            <div class="pull-right">
-                <a class="btn btn-primary" href="{{ route('productos.index') }}"> Back</a>
-            </div>
-        </div>
-    </div>
+
+    <h1>Create new product</h1>
 
     @if ($errors->any())
         <div class="alert alert-danger">
@@ -1058,20 +1049,21 @@ class ProductoController extends Controller
     <form action="{{ route('productos.store') }}" method="POST">
         @csrf
         <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-12">
+            <div class="col-12 mb-3">
                 <div class="form-group">
                     <strong>Name:</strong>
                     <input type="text" name="nombre" class="form-control" placeholder="Name">
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-12 col-md-12">
+            <div class="col-12 mb-3">
                 <div class="form-group">
                     <strong>Detail:</strong>
                     <textarea class="form-control" style="height:150px" name="detalle" placeholder="Detail"></textarea>
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-12 col-md-12 text-center">
+            <div class="col-12 mb-3">
                 <button type="submit" class="btn btn-primary">Submit</button>
+                <a class="link-secondary ms-2" href="{{ route('productos.index') }}">Cancel</a>
             </div>
         </div>
     </form>
@@ -1084,16 +1076,8 @@ class ProductoController extends Controller
 @extends('layouts.app')
 
 @section('content')
-    <div class="row">
-        <div class="col-lg-12 margin-tb">
-            <div class="pull-left">
-                <h2>Edit Producto</h2>
-            </div>
-            <div class="pull-right">
-                <a class="btn btn-primary" href="{{ route('productos.index') }}"> Back</a>
-            </div>
-        </div>
-    </div>
+
+    <h1>Edit product</h1>
 
     @if ($errors->any())
         <div class="alert alert-danger">
@@ -1111,22 +1095,23 @@ class ProductoController extends Controller
         @method('PUT')
 
         <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-12">
+            <div class="col-12 mb-3">
                 <div class="form-group">
                     <strong>Name:</strong>
                     <input type="text" name="nombre" value="{{ $producto->nombre }}" class="form-control"
                            placeholder="Name">
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-12 col-md-12">
+            <div class="col-12 mb-3">
                 <div class="form-group">
                     <strong>Detail:</strong>
                     <textarea class="form-control" style="height:150px" name="detalle"
                               placeholder="Detail">{{ $producto->detalle }}</textarea>
                 </div>
             </div>
-            <div class="col-xs-12 col-sm-12 col-md-12 text-center">
+            <div class="col-12 mb-3">
                 <button type="submit" class="btn btn-primary">Submit</button>
+                <a class="link-secondary ms-2" href="{{ route('productos.index') }}">Cancel</a>
             </div>
         </div>
     </form>
@@ -1139,45 +1124,25 @@ class ProductoController extends Controller
 @extends('layouts.app')
 
 @section('content')
-    <div class="row">
-        <div class="col-lg-12 margin-tb">
-            <div class="pull-left">
-                <h2> Show Producto</h2>
-            </div>
-            <div class="pull-right">
-                <a class="btn btn-primary" href="{{ route('productos.index') }}"> Back</a>
-            </div>
-        </div>
-    </div>
+
+    <h1>Show product</h1>
 
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="col-12 mb-3">
             <div class="form-group">
                 <strong>Name:</strong>
                 {{ $producto->nombre }}
             </div>
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-12">
+        <div class="col-12 mb-3">
             <div class="form-group">
                 <strong>Details:</strong>
                 {{ $producto->detalle }}
             </div>
         </div>
     </div>
-@endsection
-```
 
-### Inicio
-
-```blade
-{{-- resources/views/welcome.blade.php --}}
-
-@extends('layouts.app')
-
-@section('content')
-    <div class="row">
-        <p>Bienvenidos a {{ config('app.name', 'Laravel') }}.</p>
-    </div>
+    <a class="btn btn-secondary" href="{{ route('productos.index') }}">Back</a>
 @endsection
 ```
 
