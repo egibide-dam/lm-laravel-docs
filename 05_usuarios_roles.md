@@ -36,24 +36,24 @@ Migrar la base de datos:
 php artisan migrate
 ```
 
-## Crear el modelo de ejemplo, `Producto`, y su migración
+## Crear el modelo de ejemplo, `Product`, y su migración
 
 ```shell
-php artisan make:model Producto -m
+php artisan make:model Product -m
 ```
 
 ```php
-// database/migrations/2022_..._create_productos_table.php
+// database/migrations/2022_..._create_products_table.php
 
 return new class extends Migration {
 
     public function up()
     {
-        Schema::create('productos', function (Blueprint $table) {
+        Schema::create('products', function (Blueprint $table) {
             $table->id();
 
-            $table->string('nombre');
-            $table->text('detalle');
+            $table->string('name');
+            $table->text('detail');
 
             $table->timestamps();
         });
@@ -61,7 +61,7 @@ return new class extends Migration {
 
     public function down()
     {
-        Schema::dropIfExists('productos');
+        Schema::dropIfExists('products');
     }
 };
 ```
@@ -85,14 +85,14 @@ class User extends Authenticatable
 ```
 
 ```php
-// app/Models/Producto.php
+// app/Models/Product.php
 
-class Producto extends Model
+class Product extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'nombre', 'detalle'
+        'name', 'detail'
     ];
 }
 ```
@@ -140,7 +140,7 @@ npm run dev
 ```shell
 php artisan make:controller UserController
 php artisan make:controller RoleController
-php artisan make:controller ProductoController
+php artisan make:controller ProductController
 ```
 
 ## Añadir las rutas con autenticación
@@ -151,7 +151,7 @@ php artisan make:controller ProductoController
 Route::group(['middleware' => ['auth']], function () {
     Route::resource('roles', RoleController::class);
     Route::resource('users', UserController::class);
-    Route::resource('productos', ProductoController::class);
+    Route::resource('products', ProductController::class);
 });
 ```
 
@@ -354,76 +354,76 @@ class RoleController extends Controller
 ```
 
 ```php
-// app/Http/Controllers/ProductoController.php
+// app/Http/Controllers/ProductController.php
 
 namespace App\Http\Controllers;
 
-use App\Models\Producto;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
-class ProductoController extends Controller
+class ProductController extends Controller
 {
     function __construct()
     {
-        $this->middleware('permission:producto-list|producto-create|producto-edit|producto-delete', ['only' => ['index', 'show']]);
-        $this->middleware('permission:producto-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:producto-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:producto-delete', ['only' => ['destroy']]);
+        $this->middleware('permission:product-list|product-create|product-edit|product-delete', ['only' => ['index', 'show']]);
+        $this->middleware('permission:product-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:product-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:product-delete', ['only' => ['destroy']]);
     }
 
     public function index()
     {
-        $productos = Producto::latest()->paginate(5);
-        return view('productos.index', compact('productos'));
+        $products = Product::latest()->paginate(5);
+        return view('products.index', compact('products'));
     }
 
     public function create()
     {
-        return view('productos.create');
+        return view('products.create');
     }
 
     public function store(Request $request)
     {
         request()->validate([
-            'nombre' => 'required',
-            'detalle' => 'required',
+            'name' => 'required',
+            'detail' => 'required',
         ]);
 
-        Producto::create($request->all());
+        Product::create($request->all());
 
-        return redirect()->route('productos.index')
-            ->with('success', 'Producto created successfully.');
+        return redirect()->route('products.index')
+            ->with('success', 'Product created successfully.');
     }
 
-    public function show(Producto $producto)
+    public function show(Product $product)
     {
-        return view('productos.show', compact('producto'));
+        return view('products.show', compact('product'));
     }
 
-    public function edit(Producto $producto)
+    public function edit(Product $product)
     {
-        return view('productos.edit', compact('producto'));
+        return view('products.edit', compact('product'));
     }
 
-    public function update(Request $request, Producto $producto)
+    public function update(Request $request, Product $product)
     {
         request()->validate([
-            'nombre' => 'required',
-            'detalle' => 'required',
+            'name' => 'required',
+            'detail' => 'required',
         ]);
 
-        $producto->update($request->all());
+        $product->update($request->all());
 
-        return redirect()->route('productos.index')
-            ->with('success', 'Producto updated successfully');
+        return redirect()->route('products.index')
+            ->with('success', 'Product updated successfully');
     }
 
-    public function destroy(Producto $producto)
+    public function destroy(Product $product)
     {
-        $producto->delete();
+        $product->delete();
 
-        return redirect()->route('productos.index')
-            ->with('success', 'Producto deleted successfully');
+        return redirect()->route('products.index')
+            ->with('success', 'Product deleted successfully');
     }
 }
 ```
@@ -492,9 +492,9 @@ class ProductoController extends Controller
                         @endif
                     @else
                         <li><a class="nav-link" href="{{ route('home') }}">Dashboard</a></li>
-                        <li><a class="nav-link" href="{{ route('users.index') }}">Usuarios</a></li>
+                        <li><a class="nav-link" href="{{ route('users.index') }}">Users</a></li>
                         <li><a class="nav-link" href="{{ route('roles.index') }}">Roles</a></li>
-                        <li><a class="nav-link" href="{{ route('productos.index') }}">Productos</a></li>
+                        <li><a class="nav-link" href="{{ route('products.index') }}">Products</a></li>
                         <li class="nav-item dropdown">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
@@ -961,10 +961,10 @@ class ProductoController extends Controller
 @endsection
 ```
 
-### Producto
+### Product
 
 ```blade
-{{-- resources/views/productos/index.blade.php --}}
+{{-- resources/views/products/index.blade.php --}}
 
 @extends('layouts.app')
 
@@ -972,9 +972,9 @@ class ProductoController extends Controller
 
     <h1>Product management</h1>
 
-    @can('producto-create')
+    @can('product-create')
         <div class="my-3">
-            <a class="btn btn-primary" href="{{ route('productos.create') }}">Create new product</a>
+            <a class="btn btn-primary" href="{{ route('products.create') }}">Create new product</a>
         </div>
     @endcan
 
@@ -994,18 +994,18 @@ class ProductoController extends Controller
         </tr>
         </thead>
         <tbody class="align-middle">
-        @forelse($productos as $producto)
+        @forelse($products as $product)
             <tr>
-                <td>{{ $producto->id }}</td>
-                <td>{{ $producto->nombre }}</td>
-                <td>{{ $producto->detalle }}</td>
+                <td>{{ $product->id }}</td>
+                <td>{{ $product->name }}</td>
+                <td>{{ $product->detail }}</td>
                 <td>
-                    <a class="btn btn-success" href="{{ route('productos.show',$producto->id) }}">Show</a>
-                    @can('producto-edit')
-                        <a class="btn btn-secondary" href="{{ route('productos.edit',$producto->id) }}">Edit</a>
+                    <a class="btn btn-success" href="{{ route('products.show',$product->id) }}">Show</a>
+                    @can('product-edit')
+                        <a class="btn btn-secondary" href="{{ route('products.edit',$product->id) }}">Edit</a>
                     @endcan
-                    @can('producto-delete')
-                        {!! Form::open(['method' => 'DELETE','route' => ['productos.destroy', $producto->id],'style'=>'display:inline']) !!}
+                    @can('product-delete')
+                        {!! Form::open(['method' => 'DELETE','route' => ['products.destroy', $product->id],'style'=>'display:inline']) !!}
                         {!! Form::submit('Delete', ['class' => 'btn btn-danger', 'onclick' => 'return confirm("Are you sure?")']) !!}
                         {!! Form::close() !!}
                     @endcan
@@ -1019,7 +1019,7 @@ class ProductoController extends Controller
         </tbody>
         <tfoot>
         <tr>
-            <th colspan="4" class="border-0">Total: {{ $productos->count() }}</th>
+            <th colspan="4" class="border-0">Total: {{ $products->count() }}</th>
         </tr>
         </tfoot>
     </table>
@@ -1027,7 +1027,7 @@ class ProductoController extends Controller
 ```
 
 ```blade
-{{-- resources/views/productos/create.blade.php --}}
+{{-- resources/views/products/create.blade.php --}}
 
 @extends('layouts.app')
 
@@ -1046,24 +1046,24 @@ class ProductoController extends Controller
         </div>
     @endif
 
-    <form action="{{ route('productos.store') }}" method="POST">
+    <form action="{{ route('products.store') }}" method="POST">
         @csrf
         <div class="row">
             <div class="col-12 mb-3">
                 <div class="form-group">
                     <strong>Name:</strong>
-                    <input type="text" name="nombre" class="form-control" placeholder="Name">
+                    <input type="text" name="name" class="form-control" placeholder="Name">
                 </div>
             </div>
             <div class="col-12 mb-3">
                 <div class="form-group">
                     <strong>Detail:</strong>
-                    <textarea class="form-control" style="height:150px" name="detalle" placeholder="Detail"></textarea>
+                    <textarea class="form-control" style="height:150px" name="detail" placeholder="Detail"></textarea>
                 </div>
             </div>
             <div class="col-12 mb-3">
                 <button type="submit" class="btn btn-primary">Submit</button>
-                <a class="link-secondary ms-2" href="{{ route('productos.index') }}">Cancel</a>
+                <a class="link-secondary ms-2" href="{{ route('products.index') }}">Cancel</a>
             </div>
         </div>
     </form>
@@ -1071,7 +1071,7 @@ class ProductoController extends Controller
 ```
 
 ```blade
-{{-- resources/views/productos/edit.blade.php --}}
+{{-- resources/views/products/edit.blade.php --}}
 
 @extends('layouts.app')
 
@@ -1090,7 +1090,7 @@ class ProductoController extends Controller
         </div>
     @endif
 
-    <form action="{{ route('productos.update',$producto->id) }}" method="POST">
+    <form action="{{ route('products.update',$product->id) }}" method="POST">
         @csrf
         @method('PUT')
 
@@ -1098,20 +1098,20 @@ class ProductoController extends Controller
             <div class="col-12 mb-3">
                 <div class="form-group">
                     <strong>Name:</strong>
-                    <input type="text" name="nombre" value="{{ $producto->nombre }}" class="form-control"
+                    <input type="text" name="name" value="{{ $product->name }}" class="form-control"
                            placeholder="Name">
                 </div>
             </div>
             <div class="col-12 mb-3">
                 <div class="form-group">
                     <strong>Detail:</strong>
-                    <textarea class="form-control" style="height:150px" name="detalle"
-                              placeholder="Detail">{{ $producto->detalle }}</textarea>
+                    <textarea class="form-control" style="height:150px" name="detail"
+                              placeholder="Detail">{{ $product->detail }}</textarea>
                 </div>
             </div>
             <div class="col-12 mb-3">
                 <button type="submit" class="btn btn-primary">Submit</button>
-                <a class="link-secondary ms-2" href="{{ route('productos.index') }}">Cancel</a>
+                <a class="link-secondary ms-2" href="{{ route('products.index') }}">Cancel</a>
             </div>
         </div>
     </form>
@@ -1119,7 +1119,7 @@ class ProductoController extends Controller
 ```
 
 ```blade
-{{-- resources/views/productos/show.blade.php --}}
+{{-- resources/views/products/show.blade.php --}}
 
 @extends('layouts.app')
 
@@ -1131,18 +1131,18 @@ class ProductoController extends Controller
         <div class="col-12 mb-3">
             <div class="form-group">
                 <strong>Name:</strong>
-                {{ $producto->nombre }}
+                {{ $product->name }}
             </div>
         </div>
         <div class="col-12 mb-3">
             <div class="form-group">
                 <strong>Details:</strong>
-                {{ $producto->detalle }}
+                {{ $product->detail }}
             </div>
         </div>
     </div>
 
-    <a class="btn btn-secondary" href="{{ route('productos.index') }}">Back</a>
+    <a class="btn btn-secondary" href="{{ route('products.index') }}">Back</a>
 @endsection
 ```
 
@@ -1175,10 +1175,10 @@ class PermissionTableSeeder extends Seeder
             'role-create',
             'role-edit',
             'role-delete',
-            'producto-list',
-            'producto-create',
-            'producto-edit',
-            'producto-delete'
+            'product-list',
+            'product-create',
+            'product-edit',
+            'product-delete'
         ];
 
         foreach ($permissions as $permission) {
@@ -1261,7 +1261,7 @@ Exigir que la cuenta esté verificada en alguna ruta:
 Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::resource('roles', RoleController::class);
     Route::resource('users', UserController::class);
-    Route::resource('productos', ProductoController::class);
+    Route::resource('products', ProductController::class);
 });
 ```
 
