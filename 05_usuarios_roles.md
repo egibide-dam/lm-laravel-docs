@@ -1270,7 +1270,7 @@ Configurar el servidor de correo saliente en el fichero `.env`:
 ```dotenv
 # .env
 
-MAIL_DRIVER=smtp
+MAIL_MAILER=smtp
 MAIL_HOST=mailcatcher
 MAIL_PORT=1025
 MAIL_USERNAME=null
