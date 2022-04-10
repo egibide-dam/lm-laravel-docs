@@ -649,7 +649,7 @@ class EntradaController extends Controller
             $response = $this->get(route('entradas.index'));
     
             // Then
-            $response->assertSee($entrada->titulo);
+            $response->assertSuccessful()->assertSee($entrada->titulo);
         }
     
         /*
@@ -670,7 +670,7 @@ class EntradaController extends Controller
             $response = $this->get(route('entradas.create'));
     
             // Then
-            $response->assertSeeInOrder(['Nueva entrada', 'Guardar']);
+            $response->assertSuccessful()->assertSeeInOrder(['Nueva entrada', 'Guardar']);
         }
     
         public function testStore()
@@ -705,7 +705,7 @@ class EntradaController extends Controller
             $response = $this->get(route('entradas.show', $entrada));
     
             // Then
-            $response->assertSee($entrada->titulo);
+            $response->assertSuccessful()->assertSee($entrada->titulo);
         }
     
         public function testEdit()
@@ -717,7 +717,7 @@ class EntradaController extends Controller
             $response = $this->get(route('entradas.edit', $entrada), $entrada->toArray());
     
             // Then
-            $response->assertSeeInOrder([$entrada->titulo, 'Guardar']);
+            $response->assertSuccessful()->assertSeeInOrder([$entrada->titulo, 'Guardar']);
         }
     
         public function testUpdate()
