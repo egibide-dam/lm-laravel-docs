@@ -6,13 +6,14 @@
 
 1. Generar el modelo y sus recursos asociados:
 
-   > :book: [Eloquent: Getting Started](https://laravel.com/docs/8.x/eloquent)
+   > :book: [Eloquent: Getting Started](https://laravel.com/docs/10.x/eloquent)
 
     ```bash
     php artisan make:model Entrada -a
     ```
 
-   Si ya tenemos creada la migración y el controlador con `-mcr`, podemos crear el _factory_ y el _seeder_ por separado:
+   Si da error porque ya tenemos creada la migración y el controlador con `-mcr`, podemos crear el _factory_ y el
+   _seeder_ por separado:
 
     ```bash
     php artisan make:factory EntradaFactory
@@ -21,18 +22,18 @@
 
 2. Editar la migración:
 
-   > :book: [Database: Migrations](https://laravel.com/docs/8.x/migrations)
+   > :book: [Database: Migrations](https://laravel.com/docs/10.x/migrations)
 
     ```php
-    // database/migrations/2021_..._create_entradas_table.php
+    // database/migrations/2023_..._create_entradas_table.php
 
-    class CreateEntradasTable extends Migration
+    return new class extends Migration
     {
-        public function up()
+        public function up(): void
         {
             Schema::create('entradas', function (Blueprint $table) {
                 $table->id();
-                
+
                 $table->string('titulo');
                 $table->text('texto')->nullable();
                 $table->dateTimeTz('fecha')->nullable();
@@ -42,11 +43,11 @@
             });
         }
     
-        public function down()
+        public function down(): void
         {
             Schema::dropIfExists('entradas');
         }
-    }
+    };
     ```
 
 3. Lanzar la migración:
@@ -57,7 +58,7 @@
 
 4. Editar el _factory_:
 
-   > :book: [Defining Model Factories](https://laravel.com/docs/8.x/database-testing#defining-model-factories)
+   > :book: [Defining Model Factories](https://laravel.com/docs/10.x/database-testing#defining-model-factories)
    > :book: [Faker](https://fakerphp.github.io)
 
     ```php
@@ -65,9 +66,7 @@
 
     class EntradaFactory extends Factory
     {
-        protected $model = Entrada::class;
-    
-        public function definition()
+        public function definition(): array
         {
             return [
                 'titulo' => $this->faker->sentence(3),
@@ -81,14 +80,14 @@
 
 5. Editar el _seeder_:
 
-   > :book: [Database: Seeding](https://laravel.com/docs/8.x/seeding)
+   > :book: [Database: Seeding](https://laravel.com/docs/10.x/seeding)
 
     ```php
-    // database/seeds/EntradaSeeder.php
+    // database/seeders/EntradaSeeder.php
     
     class EntradaSeeder extends Seeder
     {
-        public function run()
+        public function run(): void
         {
             Entrada::factory(10)->create();
         }
@@ -98,11 +97,11 @@
 6. Activar el _seeder_:
 
     ```php
-    // database/seeds/DatabaseSeeder.php
+    // database/seeders/DatabaseSeeder.php
     
     class DatabaseSeeder extends Seeder
     {
-        public function run()
+        public function run(): void
         {
             $this->call([
                 EntradaSeeder::class,
@@ -133,8 +132,8 @@
 
 9. Añadir los campos _fillable_ y _casts_:
 
-   > :book: [Mass Assignment](https://laravel.com/docs/8.x/eloquent#mass-assignment)
-   > :book: [Eloquent: Mutators & Casting](https://laravel.com/docs/8.x/eloquent-mutators)
+   > :book: [Mass Assignment](https://laravel.com/docs/10.x/eloquent#mass-assignment)
+   > :book: [Eloquent: Mutators & Casting](https://laravel.com/docs/10.x/eloquent-mutators)
 
     ```php
     // app/Models/Entrada.php
@@ -166,9 +165,9 @@
 2. Migración:
 
     ```php
-    // database/migrations/2021_..._create_comentarios_table.php
+    // database/migrations/2023_..._create_comentarios_table.php
     
-    public function up()
+    public function up(): void
     {
         Schema::create('comentarios', function (Blueprint $table) {
             $table->id();
@@ -188,7 +187,7 @@
     ```php
     // database/factories/ComentarioFactory.php
 
-    public function definition()
+    public function definition(): array
     {
         return [
             'email' => $this->faker->email(),
@@ -202,11 +201,11 @@
 4. Seeder:
 
     ```php
-    // database/seeds/ComentarioSeeder.php
+    // database/seeders/ComentarioSeeder.php
     
     class ComentarioSeeder extends Seeder
     {
-        public function run()
+        public function run(): void
         {
             Comentario::factory(10)->create();
         }
@@ -216,11 +215,11 @@
 5. Activar el seeder:
 
     ```php
-    // database/seeds/DatabaseSeeder.php
+    // database/seeders/DatabaseSeeder.php
     
     class DatabaseSeeder extends Seeder
     {
-        public function run()
+        public function run(): void
         {
             $this->call([
                 EntradaSeeder::class,
@@ -253,9 +252,9 @@
 
 ### Relación 1→N
 
-> :book: [Eloquent: Relationships](https://laravel.com/docs/8.x/eloquent-relationships)
+> :book: [Eloquent: Relationships](https://laravel.com/docs/10.x/eloquent-relationships)
 > :book: [Eloquent Relationships Cheat Sheet](https://hackernoon.com/eloquent-relationships-cheat-sheet-5155498c209)
-> :book: [Creating Columns](https://laravel.com/docs/8.x/migrations#creating-columns)
+> :book: [Creating Columns](https://laravel.com/docs/10.x/migrations#creating-columns)
 
 1. Añadir las _foreign keys_ a las tablas:
 
@@ -264,20 +263,28 @@
     ```
 
     ```php
-    // database/migrations/2021_..._add_entrada_id_to_comentarios_table.php
+    // database/migrations/2023_..._add_entrada_id_to_comentarios_table.php
     
-    public function up()
-    {
-        Schema::table('comentarios', function (Blueprint $table) {
-
-            // Sintaxis abreviada, utilizando las convenciones del ORM
-            $table->foreignId('entrada_id')->constrained()->onDelete('cascade');
-
-            // Sintaxis completa, personalizable
-            //$table->unsignedBigInteger('entrada_id');
-            //$table->foreign('entrada_id')->references('id')->on('entradas')->onDelete('cascade');
-        });
-    }
+    return new class extends Migration {
+        public function up(): void
+        {
+            Schema::table('comentarios', function (Blueprint $table) {
+                // Sintaxis abreviada, utilizando las convenciones del ORM
+                $table->foreignId('entrada_id')->constrained()->onDelete('cascade');
+    
+                // Sintaxis completa, personalizable
+                //$table->unsignedBigInteger('entrada_id');
+                //$table->foreign('entrada_id')->references('id')->on('entradas')->onDelete('cascade');
+            });
+        }
+    
+        public function down(): void
+        {
+            Schema::table('comentarios', function (Blueprint $table) {
+                $table->dropConstrainedForeignId('entrada_id');
+            });
+        }
+    };
     ```
 
     ```bash
@@ -295,7 +302,7 @@
     {
         // ...
     
-        public function comentarios()
+        public function comentarios(): HasMany
         {
             return $this->hasMany(Comentario::class);
         }
@@ -311,7 +318,7 @@
     {
         // ...
     
-        public function entrada()
+        public function entrada(): BelongsTo
         {
             return $this->belongsTo(Entrada::class);
         }
@@ -321,22 +328,30 @@
 3. Modificar el seeder:
 
     ```php
-    // database/seeds/ComentarioSeeder.php
+    // database/seeders/DatabaseSeeder.php
     
-    class ComentarioSeeder extends Seeder
+    class DatabaseSeeder extends Seeder
     {
-        public function run()
+        public function run(): void
         {
-            Comentario::factory(10)->create([
-                'entrada_id' => 1
-            ]);
+            for ($i = 0; $i < 10; $i++) {
+                $entrada = Entrada::factory()->create();
+    
+                $num_comentarios = rand(0, 3);
+    
+                for ($j = 0; $j < $num_comentarios; $j++) {
+                    Comentario::factory()->create([
+                        'entrada_id' => $entrada->id,
+                    ]);
+                }
+            }
         }
     }
     ```
 
 ## Rutas
 
-> :book: [Routing](https://laravel.com/docs/8.x/routing)
+> :book: [Routing](https://laravel.com/docs/10.x/routing)
 
 1. Definir las rutas:
 
@@ -355,14 +370,17 @@
 
 ## Controlador
 
-> :book: [Controllers](https://laravel.com/docs/8.x/controllers)
-> :book: [Validation](https://laravel.com/docs/8.x/validation)
+> :book: [Controllers](https://laravel.com/docs/10.x/controllers)
+> :book: [Validation](https://laravel.com/docs/10.x/validation)
 
 ```php
 // app/Http/Controllers/EntradaController.php
 
 class EntradaController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
         $entradas = Entrada::all();
@@ -370,11 +388,17 @@ class EntradaController extends Controller
         return view('entradas.index', compact('entradas'));
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
     public function create()
     {
         return view('entradas.create');
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
         $this->validate($request, [
@@ -391,16 +415,25 @@ class EntradaController extends Controller
         return redirect(route('entradas.index'));
     }
 
+    /**
+     * Display the specified resource.
+     */
     public function show(Entrada $entrada)
     {
         return view('entradas.show', compact('entrada'));
     }
 
+    /**
+     * Show the form for editing the specified resource.
+     */
     public function edit(Entrada $entrada)
     {
         return view('entradas.edit', compact('entrada'));
     }
 
+    /**
+     * Update the specified resource in storage.
+     */
     public function update(Request $request, Entrada $entrada)
     {
         $this->validate($request, [
@@ -417,6 +450,9 @@ class EntradaController extends Controller
         return redirect(route('entradas.index'));
     }
 
+    /**
+     * Remove the specified resource from storage.
+     */
     public function destroy(Entrada $entrada)
     {
         $entrada->delete();
@@ -428,7 +464,7 @@ class EntradaController extends Controller
 
 ## Vistas
 
-> :book: [Views](https://laravel.com/docs/8.x/views)
+> :book: [Views](https://laravel.com/docs/10.x/views)
 
 ```blade
 {{-- resources/views/layouts/app.blade.php --}}
@@ -438,22 +474,22 @@ class EntradaController extends Controller
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <title>Mi blog</title>
 </head>
 <body>
 <div class="container">
     @yield('content')
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
         crossorigin="anonymous"></script>
 </body>
 </html>
 ```
 
-> :book: [CSRF Protection](https://laravel.com/docs/8.x/csrf)
+> :book: [CSRF Protection](https://laravel.com/docs/10.x/csrf)
 
 ```blade
 {{-- resources/views/entradas/index.blade.php --}}
@@ -557,7 +593,8 @@ class EntradaController extends Controller
         <div class="row mb-3">
             <label class="col-2 form-label">Fecha: </label>
             <div class="col-10">
-                <input class="form-control" type="datetime-local" name="fecha" value="{{ now() }}"/>
+                <input class="form-control" type="text" name="fecha" value="{{ now() }}"/>
+                <span class="text-danger">{{ $errors->first('fecha') }}</span>
             </div>
         </div>
         <div class="row mb-3">
@@ -601,7 +638,8 @@ class EntradaController extends Controller
         <div class="row mb-3">
             <label class="col-2 form-label">Fecha: </label>
             <div class="col-10">
-                <input class="form-control" type="datetime-local" name="fecha" value="{{ $entrada->fecha ?: now() }}"/>
+                <input class="form-control" type="text" name="fecha" value="{{ $entrada->fecha ?: now() }}"/>
+                <span class="text-danger">{{ $errors->first('fecha') }}</span>
             </div>
         </div>
         <div class="row mb-3">
@@ -620,8 +658,8 @@ class EntradaController extends Controller
 
 ## Tests
 
-> :book: [Testing: Getting Started](https://laravel.com/docs/8.x/testing)
-> :book: [Database Testing](https://laravel.com/docs/8.x/database-testing)
+> :book: [Testing: Getting Started](https://laravel.com/docs/10.x/testing)
+> :book: [Database Testing](https://laravel.com/docs/10.x/database-testing)
 
 1. Crear la clase de test:
 
@@ -744,7 +782,7 @@ class EntradaController extends Controller
             // Then
             $this->assertDatabaseMissing('entradas', $entrada->toArray());
         }
-    } 
+    }
     ```
 
 3. Lanzar los tests:
