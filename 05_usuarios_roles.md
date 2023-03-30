@@ -5,10 +5,11 @@
 ## Crear un proyecto nuevo
 
 ```shell
-composer create-project laravel/laravel usuarios_roles
+composer create-project laravel/laravel usuarios-roles
 ```
 
-> [Configurar el `AppServiceProvider` para que genere direcciones HTTPS](https://github.com/egibide-dam/lm-laravel-docs/blob/master/01_nuevo_proyecto_laravel.md#generar-un-proyecto-nuevo-en-la-carpeta-sites) y crear el usuario de base de datos para el proyecto.
+> [Configurar el `AppServiceProvider` para que genere direcciones HTTPS](https://github.com/egibide-dam/lm-laravel-docs/blob/master/01_nuevo_proyecto_laravel.md#generar-un-proyecto-nuevo-en-la-carpeta-sites)
+> y crear el usuario de base de datos para el proyecto.
 
 ## Instalar los paquetes necesarios
 
@@ -16,12 +17,6 @@ composer create-project laravel/laravel usuarios_roles
 
 ```shell
 composer require spatie/laravel-permission
-```
-
-Paquete para crear formularios HTML:
-
-```shell
-composer require laravelcollective/html
 ```
 
 Publicar el fichero de configuración:
@@ -36,40 +31,10 @@ Migrar la base de datos:
 php artisan migrate
 ```
 
-## Crear el modelo de ejemplo, `Product`, y su migración
+Paquete para crear formularios HTML (se utiliza en las vistas de ejemplo):
 
 ```shell
-php artisan make:model Product -m
-```
-
-```php
-// database/migrations/2022_..._create_products_table.php
-
-return new class extends Migration {
-
-    public function up()
-    {
-        Schema::create('products', function (Blueprint $table) {
-            $table->id();
-
-            $table->string('name');
-            $table->text('detail');
-
-            $table->timestamps();
-        });
-    }
-
-    public function down()
-    {
-        Schema::dropIfExists('products');
-    }
-};
-```
-
-Migrar la base de datos:
-
-```shell
-php artisan migrate
+composer require laravelcollective/html
 ```
 
 ## Actualizar los modelos
@@ -84,25 +49,12 @@ class User extends Authenticatable
 ...
 ```
 
-```php
-// app/Models/Product.php
-
-class Product extends Model
-{
-    use HasFactory;
-
-    protected $fillable = [
-        'name', 'detail'
-    ];
-}
-```
-
 ## Registrar el middleware
 
 ```php
 // app/Http/Kernel.php
 
-protected $routeMiddleware = [
+protected $middlewareAliases = [
     ...
     
     'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
@@ -113,7 +65,7 @@ protected $routeMiddleware = [
 
 ## Crear el sistema de autenticación de Laravel
 
-> :book: [Authentication](https://laravel.com/docs/9.x/authentication)
+> :book: [Authentication](https://laravel.com/docs/10.x/authentication)
 
 Instalar el paquete de soporte:
 
@@ -128,11 +80,11 @@ php artisan ui bootstrap --auth
 ```
 
 Instalar los paquete de Node.js y compilar Bootstrap 5 y otros extras
-mediante [Laravel Mix](https://laravel-mix.com/docs/6.0/what-is-mix):
+mediante [Vite](https://laravel.com/docs/10.x/vite):
 
 ```shell
 npm install
-npm run dev
+npm run build
 ```
 
 ## Crear los controladores
@@ -140,7 +92,6 @@ npm run dev
 ```shell
 php artisan make:controller UserController
 php artisan make:controller RoleController
-php artisan make:controller ProductController
 ```
 
 ## Añadir las rutas con autenticación
@@ -151,7 +102,6 @@ php artisan make:controller ProductController
 Route::group(['middleware' => ['auth']], function () {
     Route::resource('roles', RoleController::class);
     Route::resource('users', UserController::class);
-    Route::resource('products', ProductController::class);
 });
 ```
 
@@ -353,81 +303,6 @@ class RoleController extends Controller
 }
 ```
 
-```php
-// app/Http/Controllers/ProductController.php
-
-namespace App\Http\Controllers;
-
-use App\Models\Product;
-use Illuminate\Http\Request;
-
-class ProductController extends Controller
-{
-    function __construct()
-    {
-        $this->middleware('permission:product-list|product-create|product-edit|product-delete', ['only' => ['index', 'show']]);
-        $this->middleware('permission:product-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:product-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:product-delete', ['only' => ['destroy']]);
-    }
-
-    public function index()
-    {
-        $products = Product::latest()->paginate(5);
-        return view('products.index', compact('products'));
-    }
-
-    public function create()
-    {
-        return view('products.create');
-    }
-
-    public function store(Request $request)
-    {
-        request()->validate([
-            'name' => 'required',
-            'detail' => 'required',
-        ]);
-
-        Product::create($request->all());
-
-        return redirect()->route('products.index')
-            ->with('success', 'Product created successfully.');
-    }
-
-    public function show(Product $product)
-    {
-        return view('products.show', compact('product'));
-    }
-
-    public function edit(Product $product)
-    {
-        return view('products.edit', compact('product'));
-    }
-
-    public function update(Request $request, Product $product)
-    {
-        request()->validate([
-            'name' => 'required',
-            'detail' => 'required',
-        ]);
-
-        $product->update($request->all());
-
-        return redirect()->route('products.index')
-            ->with('success', 'Product updated successfully');
-    }
-
-    public function destroy(Product $product)
-    {
-        $product->delete();
-
-        return redirect()->route('products.index')
-            ->with('success', 'Product deleted successfully');
-    }
-}
-```
-
 ## Crear las vistas
 
 ### Layout
@@ -446,19 +321,16 @@ class ProductController extends Controller
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
-
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
 
-    <!-- Styles -->
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <!-- Scripts -->
+    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
 <body>
 <div id="app">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
         <div class="container">
             <a class="navbar-brand" href="{{ url('/') }}">
                 {{ config('app.name', 'Laravel') }}
@@ -491,10 +363,13 @@ class ProductController extends Controller
                             </li>
                         @endif
                     @else
-                        <li><a class="nav-link" href="{{ route('home') }}">Dashboard</a></li>
-                        <li><a class="nav-link" href="{{ route('users.index') }}">Users</a></li>
-                        <li><a class="nav-link" href="{{ route('roles.index') }}">Roles</a></li>
-                        <li><a class="nav-link" href="{{ route('products.index') }}">Products</a></li>
+                        <li><a class="nav-link" href="{{ route('home') }}">Home</a></li>
+                        @can('user-list')
+                            <li><a class="nav-link" href="{{ route('users.index') }}">Users</a></li>
+                        @endcan
+                        @can('role-list')
+                            <li><a class="nav-link" href="{{ route('roles.index') }}">Roles</a></li>
+                        @endcan
                         <li class="nav-item dropdown">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
@@ -961,191 +836,6 @@ class ProductController extends Controller
 @endsection
 ```
 
-### Product
-
-```blade
-{{-- resources/views/products/index.blade.php --}}
-
-@extends('layouts.app')
-
-@section('content')
-
-    <h1>Product management</h1>
-
-    @can('product-create')
-        <div class="my-3">
-            <a class="btn btn-primary" href="{{ route('products.create') }}">Create new product</a>
-        </div>
-    @endcan
-
-    @if ($message = Session::get('success'))
-        <div class="alert alert-success">
-            <p>{{ $message }}</p>
-        </div>
-    @endif
-
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Details</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody class="align-middle">
-        @forelse($products as $product)
-            <tr>
-                <td>{{ $product->id }}</td>
-                <td>{{ $product->name }}</td>
-                <td>{{ $product->detail }}</td>
-                <td>
-                    <a class="btn btn-success" href="{{ route('products.show',$product->id) }}">Show</a>
-                    @can('product-edit')
-                        <a class="btn btn-secondary" href="{{ route('products.edit',$product->id) }}">Edit</a>
-                    @endcan
-                    @can('product-delete')
-                        {!! Form::open(['method' => 'DELETE','route' => ['products.destroy', $product->id],'style'=>'display:inline']) !!}
-                        {!! Form::submit('Delete', ['class' => 'btn btn-danger', 'onclick' => 'return confirm("Are you sure?")']) !!}
-                        {!! Form::close() !!}
-                    @endcan
-                </td>
-            </tr>
-        @empty
-            <tr>
-                <td colspan="4">No data found.</td>
-            </tr>
-        @endforelse
-        </tbody>
-        <tfoot>
-        <tr>
-            <th colspan="4" class="border-0">Total: {{ $products->count() }}</th>
-        </tr>
-        </tfoot>
-    </table>
-@endsection
-```
-
-```blade
-{{-- resources/views/products/create.blade.php --}}
-
-@extends('layouts.app')
-
-@section('content')
-
-    <h1>Create new product</h1>
-
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <strong>Whoops!</strong> There were some problems with your input.<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <form action="{{ route('products.store') }}" method="POST">
-        @csrf
-        <div class="row">
-            <div class="col-12 mb-3">
-                <div class="form-group">
-                    <strong>Name:</strong>
-                    <input type="text" name="name" class="form-control" placeholder="Name">
-                </div>
-            </div>
-            <div class="col-12 mb-3">
-                <div class="form-group">
-                    <strong>Detail:</strong>
-                    <textarea class="form-control" style="height:150px" name="detail" placeholder="Detail"></textarea>
-                </div>
-            </div>
-            <div class="col-12 mb-3">
-                <button type="submit" class="btn btn-primary">Submit</button>
-                <a class="link-secondary ms-2" href="{{ route('products.index') }}">Cancel</a>
-            </div>
-        </div>
-    </form>
-@endsection
-```
-
-```blade
-{{-- resources/views/products/edit.blade.php --}}
-
-@extends('layouts.app')
-
-@section('content')
-
-    <h1>Edit product</h1>
-
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <strong>Whoops!</strong> There were some problems with your input.<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <form action="{{ route('products.update',$product->id) }}" method="POST">
-        @csrf
-        @method('PUT')
-
-        <div class="row">
-            <div class="col-12 mb-3">
-                <div class="form-group">
-                    <strong>Name:</strong>
-                    <input type="text" name="name" value="{{ $product->name }}" class="form-control"
-                           placeholder="Name">
-                </div>
-            </div>
-            <div class="col-12 mb-3">
-                <div class="form-group">
-                    <strong>Detail:</strong>
-                    <textarea class="form-control" style="height:150px" name="detail"
-                              placeholder="Detail">{{ $product->detail }}</textarea>
-                </div>
-            </div>
-            <div class="col-12 mb-3">
-                <button type="submit" class="btn btn-primary">Submit</button>
-                <a class="link-secondary ms-2" href="{{ route('products.index') }}">Cancel</a>
-            </div>
-        </div>
-    </form>
-@endsection
-```
-
-```blade
-{{-- resources/views/products/show.blade.php --}}
-
-@extends('layouts.app')
-
-@section('content')
-
-    <h1>Show product</h1>
-
-    <div class="row">
-        <div class="col-12 mb-3">
-            <div class="form-group">
-                <strong>Name:</strong>
-                {{ $product->name }}
-            </div>
-        </div>
-        <div class="col-12 mb-3">
-            <div class="form-group">
-                <strong>Details:</strong>
-                {{ $product->detail }}
-            </div>
-        </div>
-    </div>
-
-    <a class="btn btn-secondary" href="{{ route('products.index') }}">Back</a>
-@endsection
-```
-
 ## Crear un usuario de ejemplo
 
 ### Crear permisos
@@ -1175,10 +865,6 @@ class PermissionTableSeeder extends Seeder
             'role-create',
             'role-edit',
             'role-delete',
-            'product-list',
-            'product-create',
-            'product-edit',
-            'product-delete'
         ];
 
         foreach ($permissions as $permission) {
@@ -1233,9 +919,9 @@ class CreateAdminUserSeeder extends Seeder
 php artisan db:seed --class=CreateAdminUserSeeder
 ```
 
-## Verificación de emails
+## (Opcional) Verificación de emails
 
-> :book: [Email Verification](https://laravel.com/docs/9.x/verification)
+> :book: [Email Verification](https://laravel.com/docs/10.x/verification)
 
 Activar la verificación:
 
@@ -1261,7 +947,6 @@ Exigir que la cuenta esté verificada en alguna ruta:
 Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::resource('roles', RoleController::class);
     Route::resource('users', UserController::class);
-    Route::resource('products', ProductController::class);
 });
 ```
 
@@ -1280,7 +965,7 @@ MAIL_FROM_ADDRESS=noreply@example.org
 MAIL_FROM_NAME="${APP_NAME}"
 ```
 
-Problema de firma inválida por que estamos usando un proxy inverso:
+Problema de firma inválida porque estamos usando un proxy inverso:
 
 ```php
 // app/Http/Middleware/TrustProxies.php
@@ -1288,4 +973,4 @@ Problema de firma inválida por que estamos usando un proxy inverso:
 protected $proxies = '*';
 ```
 
-> :book: [HTTP Requests](https://laravel.com/docs/9.x/requests#configuring-trusted-proxies)
+> :book: [HTTP Requests](https://laravel.com/docs/10.x/requests#configuring-trusted-proxies)
