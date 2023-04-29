@@ -92,6 +92,7 @@ npm run build
 ```shell
 php artisan make:controller UserController
 php artisan make:controller RoleController
+php artisan make:controller PermissionController
 ```
 
 ## Añadir las rutas con autenticación
@@ -100,8 +101,9 @@ php artisan make:controller RoleController
 // routes/web.php
 
 Route::group(['middleware' => ['auth']], function () {
-    Route::resource('roles', RoleController::class);
     Route::resource('users', UserController::class);
+    Route::resource('roles', RoleController::class);
+    Route::resource('permissions', PermissionController::class);
 });
 ```
 
@@ -303,6 +305,79 @@ class RoleController extends Controller
 }
 ```
 
+```php
+// app/Http/Controllers/PermissionController.php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Spatie\Permission\Models\Permission;
+
+class PermissionController extends Controller
+{
+    function __construct()
+    {
+        $this->middleware('permission:permission-list|permission-create|permission-edit|permission-delete', ['only' => ['index', 'show']]);
+        $this->middleware('permission:permission-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:permission-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:permission-delete', ['only' => ['destroy']]);
+    }
+
+    public function index()
+    {
+        $permission = Permission::all();
+        return view('permissions.index', compact('permission'));
+    }
+
+    public function create()
+    {
+        return view('permissions.create');
+    }
+
+    public function store(Request $request)
+    {
+        request()->validate([
+            'name' => 'required|unique:permissions,name',
+        ]);
+
+        Permission::create($request->all());
+
+        return redirect()->route('permissions.index')
+            ->with('success', 'Permission created successfully');
+    }
+
+    public function show(Permission $permission)
+    {
+        return view('permissions.show', compact('permission'));
+    }
+
+    public function edit(Permission $permission)
+    {
+        return view('permissions.edit', compact('permission'));
+    }
+
+    public function update(Request $request, Permission $permission)
+    {
+        request()->validate([
+            'name' => 'required|unique:permissions,name',
+        ]);
+
+        $permission->update($request->all());
+
+        return redirect()->route('permissions.index')
+            ->with('success', 'Permission updated successfully');
+    }
+
+    public function destroy(Permission $permission)
+    {
+        $permission->delete();
+
+        return redirect()->route('permissions.index')
+            ->with('success', 'Permission deleted successfully');
+    }
+}
+```
+
 ## Crear las vistas
 
 ### Layout
@@ -369,6 +444,9 @@ class RoleController extends Controller
                         @endcan
                         @can('role-list')
                             <li><a class="nav-link" href="{{ route('roles.index') }}">Roles</a></li>
+                        @endcan
+                        @can('permission-list')
+                            <li><a class="nav-link" href="{{ route('permissions.index') }}">Permissions</a></li>
                         @endcan
                         <li class="nav-item dropdown">
                             <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
@@ -836,6 +914,164 @@ class RoleController extends Controller
 @endsection
 ```
 
+### Permission
+
+```blade
+{{-- resources/views/permissions/index.blade.php --}}
+
+@extends('layouts.app')
+
+@section('content')
+
+    <h1>Permission management</h1>
+
+    @can('permission-create')
+        <div class="my-3">
+            <a class="btn btn-primary" href="{{ route('permissions.create') }}">Create new permission</a>
+        </div>
+    @endcan
+
+    @if ($message = Session::get('success'))
+        <div class="alert alert-success">
+            <p>{{ $message }}</p>
+        </div>
+    @endif
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th colspan="2">Action</th>
+        </tr>
+        </thead>
+        <tbody class="align-middle">
+        @forelse($permission as $permission)
+            <tr>
+                <td>{{ $permission->id }}</td>
+                <td>{{ $permission->name }}</td>
+                <td><a class="btn btn-success" href="{{ route('permissions.show', $permission->id) }}">Show</a>
+                    @can('permission-edit')
+                        <a class="btn btn-secondary" href="{{ route('permissions.edit',$permission->id) }}">Edit</a>
+                    @endcan
+                    @can('permission-delete')
+                        {!! Form::open(['method' => 'DELETE','route' => ['permissions.destroy', $permission->id],'style'=>'display:inline']) !!}
+                        {!! Form::submit('Delete', ['class' => 'btn btn-danger', 'onclick' => 'return confirm("Are you sure?")']) !!}
+                        {!! Form::close() !!}
+                    @endcan
+                </td>
+            </tr>
+        @empty
+            <tr>
+                <td colspan="3">No data found.</td>
+            </tr>
+        @endforelse
+        </tbody>
+        <tfoot>
+        <tr>
+            <th colspan="4" class="border-0">Total: {{ $permission->count() }}</th>
+        </tr>
+        </tfoot>
+    </table>
+@endsection
+```
+
+```blade
+{{-- resources/views/permissions/create.blade.php --}}
+
+@extends('layouts.app')
+
+@section('content')
+
+    <h1>Create new permission</h1>
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <strong>Whoops!</strong> There were some problems with your input.<br><br>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    {!! Form::open(array('route' => 'permissions.store','method'=>'POST')) !!}
+    <div class="row">
+        <div class="col-2 mb-3">
+            <div class="form-group">
+                <strong>Name:</strong>
+                {!! Form::text('name', null, array('placeholder' => 'Name','class' => 'form-control')) !!}
+            </div>
+        </div>
+        <div class="col-12 mb-3">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a class="link-secondary ms-2" href="{{ route('permissions.index') }}">Cancel</a>
+        </div>
+    </div>
+    {!! Form::close() !!}
+@endsection
+```
+
+```blade
+{{-- resources/views/permissions/edit.blade.php --}}
+
+@extends('layouts.app')
+
+@section('content')
+
+    <h1>Edit permission</h1>
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <strong>Whoops!</strong> There were some problems with your input.<br><br>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    {!! Form::model($permission, ['method' => 'PATCH','route' => ['permissions.update', $permission->id]]) !!}
+    <div class="row">
+        <div class="col-2 mb-3">
+            <div class="form-group">
+                <strong>Name:</strong>
+                {!! Form::text('name', null, array('placeholder' => 'Name','class' => 'form-control')) !!}
+            </div>
+        </div>
+        <div class="col-12 mb-3">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a class="link-secondary ms-2" href="{{ route('permissions.index') }}">Cancel</a>
+        </div>
+    </div>
+    {!! Form::close() !!}
+@endsection
+```
+
+```blade
+{{-- resources/views/permissions/show.blade.php --}}
+
+@extends('layouts.app')
+
+@section('content')
+
+    <h1>Show permission</h1>
+
+    <div class="row">
+        <div class="col-12 mb-3">
+            <div class="form-group">
+                <strong>Name:</strong>
+                {{ $permission->name }}
+            </div>
+        </div>
+    </div>
+
+    <a class="btn btn-secondary" href="{{ route('permissions.index') }}">Back</a>
+@endsection
+```
+
 ## Crear un usuario de ejemplo
 
 ### Crear permisos
@@ -865,6 +1101,10 @@ class PermissionTableSeeder extends Seeder
             'role-create',
             'role-edit',
             'role-delete',
+            'permission-list',
+            'permission-create',
+            'permission-edit',
+            'permission-delete',
         ];
 
         foreach ($permissions as $permission) {
@@ -945,8 +1185,9 @@ Exigir que la cuenta esté verificada en alguna ruta:
 // routes/web.php
 
 Route::group(['middleware' => ['auth', 'verified']], function () {
-    Route::resource('roles', RoleController::class);
     Route::resource('users', UserController::class);
+    Route::resource('roles', RoleController::class);
+    Route::resource('permissions', PermissionController::class);
 });
 ```
 
